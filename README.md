@@ -1,5 +1,5 @@
 # Pathfinding-Demo
-This project is an anthology of pathfinding method
+This project is an anthology of pathfinding methods
 
 
 I'll implement 3 or 4 different pathfinding algorithms, starting with A* 
