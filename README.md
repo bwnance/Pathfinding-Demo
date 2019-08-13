@@ -32,6 +32,7 @@ I'll implement 3 or 4 different pathfinding algorithms, starting with A*
 ## Day 4: 
 * More algorithms!
 * Performance reports!
+* Host on gh-pages
 
 # Wireframe:
 ![Wireframe](wireframe.png?raw=true "Wireframe")
