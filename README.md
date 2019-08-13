@@ -13,7 +13,7 @@ I'll implement 3 or 4 different pathfinding algorithms, starting with A*
 
 
 
-See the "Wireframe.png" in this repo
+https://i.imgur.com/lFoLYUo.png
 
 
 
