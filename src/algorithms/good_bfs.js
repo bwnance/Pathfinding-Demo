@@ -1,8 +1,9 @@
 import Graph from "./graph";
-export default class BadBFS {
-	constructor(board) {
+export default class GoodBFS {
+	constructor(board, settings) {
 		this.board = board;
-		this.graph;
+        this.graph;
+        this.settings = settings;
 		this.grid = [];
 		this.came_from;
 		this.frontier = [];
@@ -12,7 +13,7 @@ export default class BadBFS {
 		this.drawPath = this.drawPath.bind(this);
 	}
 	initializeGraph() {
-		this.graph = new Graph(this.board.grid);
+		this.graph = new Graph(this.board.grid, this.settings);
 	}
 
 	recursiveStep() {
