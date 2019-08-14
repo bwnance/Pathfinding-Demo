@@ -136,7 +136,7 @@ export default class Board {
 		const params = {
 			width: width,
 			height: height,
-			type: Two.Types.webgl
+			type: Two.Types.canvas
 		};
 		this.setupBG(params);
 		this.setupFG(params);
