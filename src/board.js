@@ -9,6 +9,7 @@ export default class Board {
 		this.setup();
 		this.startCoords;
 		this.targetCoords;
+		this.lines = [];
 	}
 	setup() {
 		this.setupCanvases();
@@ -25,22 +26,50 @@ export default class Board {
 		this.setupGrid(params);
 		this.twoBg.render();
 	}
+	createPath(args) {
+		const anchors = [];
+		args.forEach(pair => {
+			debugger;
+			const anchor = new Two.Anchor(pair[0], pair[1]);
+			anchors.push(anchor);
+		});
+		const path = this.twoFg.makePath(anchors, true);
+		path.stroke = "black";
+		path.linewidth = 10;
+		this.twoFg.update();
+	}
+	createLine(c1, c2, color, thickness) {
+		const [xPos1, yPos1] = this.convertCoordinates(...c1);
+		const [xPos2, yPos2] = this.convertCoordinates(...c2);
+		const line = this.twoFg.makeLine(xPos1, yPos1, xPos2, yPos2);
+		line.stroke = color;
+		line.linewidth = thickness;
+		line.cap = "round";
+		line.miter = "round";
+		line.join = "round";
+		line.fill = "black";
+		this.lines.push(line);
+		this.twoFg.update();
+	}
 	colorBox(x, y, color, objectType = 1, override = false) {
 		const stringCoords = JSON.stringify([x, y]);
-		if (!override && 
+		if (
+			!override &&
 			(stringCoords === JSON.stringify(this.targetCoords) ||
-			stringCoords === JSON.stringify(this.startCoords))
-		) return
-			if (this.grid[y][x].box) {
-				this.grid[y][x].box.fill = color;
-			} else {
-				this.createBox(this.twoFg, x, y, color, true, objectType);
-				this.twoFg.update();
-			}
+				stringCoords === JSON.stringify(this.startCoords))
+		)
+			return;
+		if (this.grid[y][x].box) {
+			this.grid[y][x].box.fill = color;
+		} else {
+			this.createBox(this.twoFg, x, y, color, true, objectType);
+		}
+		this.twoFg.update();
 	}
 	createBox(context, x, y, color, saveBox = false, objectType = 0) {
 		const [xPos, yPos] = this.convertCoordinates(x, y);
 		let box = context.makeRectangle(xPos, yPos, this.boxSize, this.boxSize);
+		// let dot = context.makeCircle(xPos, yPos, 5);
 		box.stroke = "rgb(180,180,180)";
 		box.fill = color;
 		this.grid[y][x] = {
@@ -56,9 +85,13 @@ export default class Board {
 	}
 	clearPath() {
 		// this.twoFg.clear();
+		this.lines.forEach(line => {
+			this.twoFg.remove(line);
+		});
+		this.lines = [];
 		this.grid.forEach((row, y) => {
 			row.forEach((el, x) => {
-				if(el.objectType === 1) return;
+				if (el.objectType === 1) return;
 				this.twoFg.remove(el.box);
 				el.box = null;
 				el.objectType = 0;
@@ -70,10 +103,13 @@ export default class Board {
 		this.twoFg.update();
 	}
 	clearWalls() {
+		this.lines.forEach(line => {
+			this.twoFg.remove(line);
+		});
+		this.lines = [];
 		// this.twoFg.clear();
 		this.grid.forEach((row, y) => {
 			row.forEach((el, x) => {
-				
 				this.twoFg.remove(el.box);
 				el.box = null;
 				el.objectType = 0;
@@ -108,10 +144,10 @@ export default class Board {
 	setupGrid(params) {
 		const numLinesY = params.height / this.boxSize;
 		const numLinesX = params.width / this.boxSize;
-		for (let y = 0; y <= numLinesY; y++) {
+		for (let y = 1; y <= numLinesY; y++) {
 			// const yStep = y * this.boxSize - this.boxSize / 2;
 			this.grid[y] = [];
-			for (let x = 0; x <= numLinesX; x++) {
+			for (let x = 1; x <= numLinesX; x++) {
 				// const xStep = x * this.boxSize - this.boxSize / 2;
 				this.createBox(this.twoBg, x, y, "rgba(0,0,0,0)");
 				// let box = this.twoBg.makeRectangle(
@@ -153,7 +189,7 @@ export default class Board {
 		const params = {
 			width: width,
 			height: height,
-			type: Two.Types.canvas
+			type: Two.Types.svg
 		};
 		this.setupBG(params);
 		this.setupFG(params);
@@ -163,18 +199,21 @@ export default class Board {
 		if (e.buttons === 1) {
 			const x = Math.floor(e.layerX / this.boxSize) + 1;
 			const y = Math.floor(e.layerY / this.boxSize) + 1;
-			if (this.grid[y][x].objectType === 2 || this.grid[y][x].objectType === 3)
-				return;
+			// console.log([x, y]);
+			if (!this.grid[y] || !this.grid[y][x]) return;
+			if (this.grid[y][x].objectType !== 0) return;
 			if (this.grid[y][x] && this.grid[y][x].objectType === 1) return;
 			this.colorBox(x, y, "rgb(150, 150, 150)", 1);
 		} else if (e.buttons === 2) {
 			e.preventDefault();
 			const x = Math.floor(e.layerX / this.boxSize) + 1;
 			const y = Math.floor(e.layerY / this.boxSize) + 1;
-			if (this.grid[y][x].box && this.grid[y][x].objectType === 0) return;
-			if (this.grid[y][x].objectType === 2 || this.grid[y][x].objectType === 3)
-				return;
-			this.deleteBox(x, y);
+			if (!this.grid[y] || !this.grid[y][x]) return;
+			if (this.grid[y][x].box && this.grid[y][x].objectType === 1) {
+				// if (this.grid[y][x].objectType === 2 || this.grid[y][x].objectType === 3)
+				// 	return;
+				this.deleteBox(x, y);
+			}
 		}
 	}
 	run() {}

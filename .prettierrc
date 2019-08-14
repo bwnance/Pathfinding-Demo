@@ -1,6 +1,7 @@
 {
     "[javascript]": {
     "editor.formatOnSave": true
-    },
-    "useTabs": true
+},
+"useTabs": true,
+"prettier.printWidth": 90
 }
