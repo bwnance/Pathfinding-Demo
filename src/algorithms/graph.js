@@ -1,9 +1,9 @@
 export default class Graph {
-	constructor(grid) {
+	constructor(grid, settings) {
+        this.settings = settings
 		this.nodes = {};
 		this.aMatrix = [];
 		this.grid = grid;
-		this.mode = 1;
 		this.populateFromGrid(grid);
 	}
 	populateFromGrid(grid) {
@@ -24,7 +24,7 @@ export default class Graph {
 		const horVertDirs = [[0, 1], [1, 0], [-1, 0], [0, -1]];
 		const diagDirs = [[1, 1], [-1, -1], [-1, 1], [1, -1]];
 		let dirs;
-		switch (this.mode) {
+		switch (this.settings.mode) {
 			case 0:
 				dirs = horVertDirs;
 				break;

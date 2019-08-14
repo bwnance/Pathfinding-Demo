@@ -29,7 +29,6 @@ export default class Board {
 	createPath(args) {
 		const anchors = [];
 		args.forEach(pair => {
-			debugger;
 			const anchor = new Two.Anchor(pair[0], pair[1]);
 			anchors.push(anchor);
 		});

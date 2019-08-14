@@ -1,21 +1,30 @@
+import BadBFS from "./algorithms/bad_bfs";
+import GoodBFS from "./algorithms/good_bfs";
 export default class Toolbar {
-	constructor(settings, startSearch, board) {
-        this.board = board;
+	constructor(settings, board) {
+		this.board = board;
 		this.settings = settings;
-		this.startSearch = startSearch;
 		this.handleSearchClick = this.handleSearchClick.bind(this);
-        this.handleAStarClick = this.handleAStarClick.bind(this);
-        this.handleClearWalls = this.handleClearWalls.bind(this);
+		this.handleAStarClick = this.handleAStarClick.bind(this);
+		this.handleClearWalls = this.handleClearWalls.bind(this);
         this.handleClearPath = this.handleClearPath.bind(this);
+        this.handleBadBFSClick = this.handleBadBFSClick.bind(this);
+        this.handleGoodBFSClick = this.handleGoodBFSClick.bind(this);
 		this.setupEventListeners();
 	}
 	setupEventListeners() {
 		document
 			.getElementById("search")
-			.addEventListener("click", ()=> setTimeout(this.handleSearchClick, 0));
+			.addEventListener("click", () => setTimeout(this.handleSearchClick, 0));
+		// document
+		// 	.getElementById("a*")
+		// 	.addEventListener("click", this.handleAStarClick);
+		// document
+		// 	.getElementById("bad-bfs")
+		// 	.addEventListener("click", this.handleBadBFSClick);
 		document
-			.getElementById("a*")
-			.addEventListener("click", this.handleAStarClick);
+			.getElementById("good-bfs")
+			.addEventListener("click", this.handleGoodBFSClick);
 		document
 			.getElementById("clear-walls")
 			.addEventListener("click", this.handleClearWalls);
@@ -24,15 +33,30 @@ export default class Toolbar {
 			.addEventListener("click", this.handleClearPath);
 	}
 	handleSearchClick() {
-		this.startSearch();
+		switch (this.settings.algorithm) {
+			case "BAD_BFS":
+				const badBFS = new BadBFS(this.board);
+				badBFS.start();
+				break;
+			case "GOOD_BFS":
+				const goodBFS = new GoodBFS(this.board, this.settings);
+				goodBFS.startRecursive();
+				break;
+		}
 	}
 	handleAStarClick() {
-		this.settings.algorithm = 0;
-    }
-    handleClearWalls(){
-        this.board.clearWalls();
-    }
-    handleClearPath(){
-        this.board.clearPath();
-    }
+		this.settings.algorithm = "A_STAR";
+	}
+	handleBadBFSClick() {
+		this.settings.algorithm = "BAD_BFS";
+	}
+	handleGoodBFSClick() {
+		this.settings.algorithm = "GOOD_BFS";
+	}
+	handleClearWalls() {
+		this.board.clearWalls();
+	}
+	handleClearPath() {
+		this.board.clearPath();
+	}
 }

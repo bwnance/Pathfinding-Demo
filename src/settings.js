@@ -1,6 +1,7 @@
 export default class Settings{
     constructor(){
-        this.algorithm = 0;
+        this.algorithm = "GOOD_BFS";
+        this.mode = 1;
     }
 
 }
