@@ -1,14 +1,7 @@
 export default class BFS {
 	constructor(board) {
 		this.board = board;
-		this.grid = board.grid.map((row, y) => {
-			return row.map((el, x) => {
-				return {
-					pos: [x, y],
-					objectType: el.objectType
-				};
-			});
-		});
+		this.grid = [];
 		this.frontier = [];
 		this.start = this.start.bind(this);
 	}
@@ -26,43 +19,56 @@ export default class BFS {
 		const gridSizeY = this.grid.length - 1;
 		const gridSizeX = this.grid[0].length;
 		neighbors.push(this.grid[y][x - 1]);
-		if (y > 0) neighbors.push(this.grid[y - 1][x - 1]);
+		// if (y > 0) neighbors.push(this.grid[y - 1][x - 1]);
 		neighbors.push(this.grid[y][x + 1]);
 		if (!this.grid[y + 1]) debugger;
-		if (y < gridSizeY) neighbors.push(this.grid[y + 1][x + 1]);
+		// if (y < gridSizeY) neighbors.push(this.grid[y + 1][x + 1]);
 		if (y > 0) neighbors.push(this.grid[y - 1][x]);
 		if (y < gridSizeY) neighbors.push(this.grid[y + 1][x]);
-		if (y < gridSizeY) neighbors.push(this.grid[y + 1][x - 1]);
-		if (y > 0) neighbors.push(this.grid[y - 1][x + 1]);
+		// if (y < gridSizeY) neighbors.push(this.grid[y + 1][x - 1]);
+		// if (y > 0) neighbors.push(this.grid[y - 1][x + 1]);
 		neighbors = neighbors.filter(el => {
 			const result =
 				el &&
 				el.pos[0] >= 0 &&
 				!this.arrayContainsArray(this.came_from, el.pos) &&
 				el.pos[1] >= 0 &&
+				el.objectType != 1 &&
 				(el.objectType === 0 || el.objectType === 3);
 			console.log(result);
+			debugger;
 			return result;
 		});
 		return neighbors;
 	}
+	initGrid() {
+		this.grid = this.board.grid.map((row, y) => {
+			return row.map((el, x) => {
+				return {
+					pos: [x, y],
+					objectType: el.objectType
+				};
+			});
+		});
+	}
 	start() {
+		this.initGrid();
 		this.frontier = [];
 		this.frontier.unshift(this.board.startCoords);
 		this.came_from = {};
 		this.came_from[this.board.startCoords] = {};
 		while (this.frontier.length > 0) {
-            const current = this.frontier.pop();
-            debugger
+			const current = this.frontier.pop();
+			debugger;
 			if (JSON.stringify(current) === JSON.stringify(this.board.targetCoords))
 				break;
-			setTimeout(() => this.board.colorBox(...current, "yellow"), 0);
+			setTimeout(() => this.board.colorBox(...current, "yellow", 4), 0);
 
 			// this.board.deleteBox(...current)
 			const neighbors = this.getNeighbors(...current);
 			neighbors.forEach(el => {
 				this.frontier.unshift(el.pos);
-				setTimeout(() => this.board.colorBox(...el.pos, "blue"), 0);
+				setTimeout(() => this.board.colorBox(...el.pos, "blue", 5), 0);
 				this.came_from[el.pos] = current;
 			});
 		}

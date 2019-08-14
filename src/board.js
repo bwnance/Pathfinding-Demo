@@ -54,10 +54,27 @@ export default class Board {
 			}
 		};
 	}
-	clear() {
-		this.twoFg.clear();
+	clearPath() {
+		// this.twoFg.clear();
 		this.grid.forEach((row, y) => {
 			row.forEach((el, x) => {
+				if(el.objectType === 1) return;
+				this.twoFg.remove(el.box);
+				el.box = null;
+				el.objectType = 0;
+				// if (el.box) this.twoFg.remove(el.box);
+			});
+		});
+		this.setStart(...this.startCoords);
+		this.setTarget(...this.targetCoords);
+		this.twoFg.update();
+	}
+	clearWalls() {
+		// this.twoFg.clear();
+		this.grid.forEach((row, y) => {
+			row.forEach((el, x) => {
+				
+				this.twoFg.remove(el.box);
 				el.box = null;
 				el.objectType = 0;
 				// if (el.box) this.twoFg.remove(el.box);

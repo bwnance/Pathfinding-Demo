@@ -5,7 +5,8 @@ export default class Toolbar {
 		this.startSearch = startSearch;
 		this.handleSearchClick = this.handleSearchClick.bind(this);
         this.handleAStarClick = this.handleAStarClick.bind(this);
-        this.handleClear = this.handleClear.bind(this);
+        this.handleClearWalls = this.handleClearWalls.bind(this);
+        this.handleClearPath = this.handleClearPath.bind(this);
 		this.setupEventListeners();
 	}
 	setupEventListeners() {
@@ -16,8 +17,11 @@ export default class Toolbar {
 			.getElementById("a*")
 			.addEventListener("click", this.handleAStarClick);
 		document
-			.getElementById("clear")
-			.addEventListener("click", this.handleClear);
+			.getElementById("clear-walls")
+			.addEventListener("click", this.handleClearWalls);
+		document
+			.getElementById("clear-path")
+			.addEventListener("click", this.handleClearPath);
 	}
 	handleSearchClick() {
 		this.startSearch();
@@ -25,7 +29,10 @@ export default class Toolbar {
 	handleAStarClick() {
 		this.settings.algorithm = 0;
     }
-    handleClear(){
-        this.board.clear();
+    handleClearWalls(){
+        this.board.clearWalls();
+    }
+    handleClearPath(){
+        this.board.clearPath();
     }
 }
