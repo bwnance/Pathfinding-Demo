@@ -193,7 +193,6 @@ export default class Board {
 		this.deleteBox(...this.startCoords);
 	}
 	setStart(x, y) {
-		// const [xPos, yPos] = this.convertCoordinates(x, y);
 		this.colorBox(x, y, "green", 2, true);
 		this.startCoords = [x, y];
 	}
