@@ -10,16 +10,17 @@ export default class Board {
 		this.startCoords;
 		this.targetCoords;
 		this.lines = [];
+		this.carryingStart = false;
+		this.carryingEnd = false;
+		this.deleting = false;
+		this.building = false;
+		this.lastCoords = [];
 	}
 	setup() {
 		this.setupCanvases();
 		this.addListeners();
 	}
-	addListeners() {
-		this.el.addEventListener("mousemove", this.handleMouseEvent.bind(this));
-		this.el.addEventListener("mousedown", this.handleMouseEvent.bind(this));
-		document.oncontextmenu = () => false;
-	}
+
 	setupBG(params) {
 		this.twoBg = new Two(params).appendTo(this.el);
 
@@ -124,15 +125,7 @@ export default class Board {
 		const yPos = y * this.boxSize - this.boxSize / 2;
 		return [xPos, yPos];
 	}
-	setStart(x, y) {
-		// const [xPos, yPos] = this.convertCoordinates(x, y);
-		this.colorBox(x, y, "green", 2, true);
-		this.startCoords = [x, y];
-	}
-	setTarget(x, y) {
-		this.colorBox(x, y, "red", 3, true);
-		this.targetCoords = [x, y];
-	}
+
 	deleteBox(x, y) {
 		const el = this.grid[y][x];
 		el.objectType = 0;
@@ -193,26 +186,89 @@ export default class Board {
 		this.setupBG(params);
 		this.setupFG(params);
 	}
-
-	handleMouseEvent(e) {
-		if (e.buttons === 1) {
-			const x = Math.floor(e.layerX / this.boxSize) + 1;
-			const y = Math.floor(e.layerY / this.boxSize) + 1;
-			// console.log([x, y]);
-			if (!this.grid[y] || !this.grid[y][x]) return;
-			if (this.grid[y][x].objectType !== 0) return;
-			if (this.grid[y][x] && this.grid[y][x].objectType === 1) return;
+	clearEnd() {
+		this.deleteBox(...this.targetCoords);
+	}
+	clearStart() {
+		this.deleteBox(...this.startCoords);
+	}
+	setStart(x, y) {
+		// const [xPos, yPos] = this.convertCoordinates(x, y);
+		this.colorBox(x, y, "green", 2, true);
+		this.startCoords = [x, y];
+	}
+	setTarget(x, y) {
+		this.colorBox(x, y, "red", 3, true);
+		this.targetCoords = [x, y];
+	}
+	addListeners() {
+		this.el.addEventListener("mousemove", this.handleMouseMove.bind(this));
+		this.el.addEventListener("mousedown", this.handleMouseDown.bind(this));
+		this.el.addEventListener("mouseup", this.handleMouseUp.bind(this));
+		document.oncontextmenu = () => false;
+	}
+	handleMouseUp(e) {
+		const x = Math.floor(e.layerX / this.boxSize) + 1;
+		const y = Math.floor(e.layerY / this.boxSize) + 1;
+		if (this.carryingStart) {
+			this.carryingStart = false;
+		}
+		if (this.carryingEnd) {
+			this.carryingEnd = false;
+		}
+		if(this.building){
+			this.building = false;
+		}
+		if(this.deleting){
+			this.deleting = false;
+		}
+	}
+	handleMouseDown(e) {
+		const x = Math.floor(e.layerX / this.boxSize) + 1;
+		const y = Math.floor(e.layerY / this.boxSize) + 1;
+		if (!this.grid[y] || !this.grid[y][x]) return;
+		if (this.grid[y][x].objectType === 2) {
+			this.carryingStart = true;
+			return;
+		}
+		if (this.grid[y][x].objectType === 3) {
+			this.carryingEnd = true;
+			return;
+		}
+		if (this.grid[y][x].objectType === 0) {
+			this.building = true;
 			this.colorBox(x, y, "rgb(150, 150, 150)", 1);
-		} else if (e.buttons === 2) {
-			e.preventDefault();
-			const x = Math.floor(e.layerX / this.boxSize) + 1;
-			const y = Math.floor(e.layerY / this.boxSize) + 1;
-			if (!this.grid[y] || !this.grid[y][x]) return;
-			if (this.grid[y][x].box && this.grid[y][x].objectType === 1) {
-				// if (this.grid[y][x].objectType === 2 || this.grid[y][x].objectType === 3)
-				// 	return;
-				this.deleteBox(x, y);
-			}
+			return
+		}
+		if (this.grid[y][x].objectType === 1) {
+			this.deleting = true;
+			this.deleteBox(x, y);
+			return
+		}
+	}
+	handleMouseMove(e) {
+		const x = Math.floor(e.layerX / this.boxSize) + 1;
+		const y = Math.floor(e.layerY / this.boxSize) + 1;
+		if (!this.grid[y] || !this.grid[y][x]) return;
+		if(JSON.stringify(this.lastCoords) === JSON.stringify([x,y])) return
+		this.lastCoords = [x,y];
+		if (this.carryingEnd) {
+			this.clearEnd();
+			this.setTarget(x, y);
+			return;
+		}
+		if (this.carryingStart) {
+			this.clearStart();
+			this.setStart(x, y);
+			return;
+		}
+		if (this.building) {
+			this.colorBox(x, y, "rgb(150, 150, 150)", 1);
+			return
+		}
+		if (this.deleting) {
+			this.deleteBox(x, y);
+			return
 		}
 	}
 	run() {}
