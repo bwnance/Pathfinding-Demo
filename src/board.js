@@ -193,7 +193,7 @@ export default class Board {
 	setupCanvases() {
 		const height =
 			this.boxSize +
-			Math.floor(this.el.offsetHeight / this.boxSize) * this.boxSize;
+			Math.floor(this.el.offsetHeight / this.boxSize) * this.boxSize -1;
 
 		const width =
 			this.boxSize +
