@@ -3,7 +3,7 @@ export default class PriorityQueue{
         this.pq = [];
     }
     enqueue(item, priority){
-        this.removeDuplicate(item);
+        // this.removeDuplicate(item);
         const el = new PriorityQueueItem(item, priority);
         let inserted = false;
         for(let i = 0; i < this.pq.length; i++){

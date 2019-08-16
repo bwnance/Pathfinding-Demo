@@ -23,7 +23,7 @@ export default class WeightedGraph {
 		});
 	}
 	getEndCost(x, y) {
-		return this.heuristic([x,y], this.board.targetCoords) * (1.0+0.0001)
+		return this.heuristic([x,y], this.board.targetCoords) * (1.0+0.001)
 	}
 	neighbors(node) {
 		const neighbors = [];
@@ -54,7 +54,7 @@ export default class WeightedGraph {
 			const neighbor = this.nodes[`${newDir.x},${newDir.y}`];
 			if (neighbor.objectType === 1) return;
 			if ((dir[0] === -1 && dir[1] === -1) || (dir[0] === 1 && dir[1] === 1)) {
-				moveCost = 1;
+				moveCost = Math.SQRT2;
 				const testDir1 = { x: newDir.x - dir[1], y: newDir.y };
 				const testDir2 = { x: newDir.x, y: newDir.y - dir[1] };
 				const testNode1 = this.nodes[`${testDir1.x},${testDir1.y}`];
@@ -64,14 +64,14 @@ export default class WeightedGraph {
 				(dir[0] === -1 && dir[1] === 1) ||
 				(dir[0] === 1 && dir[1] === -1)
 			) {
-				moveCost = 1
+				moveCost = Math.SQRT2;
 				const testDir1 = { x: newDir.x + dir[1], y: newDir.y };
 				const testDir2 = { x: newDir.x, y: newDir.y + dir[0] };
 				const testNode1 = this.nodes[`${testDir1.x},${testDir1.y}`];
 				const testNode2 = this.nodes[`${testDir2.x},${testDir2.y}`];
 				if (testNode1.objectType === 1 || testNode2.objectType === 1) return;
 			}
-			neighbors.push(neighbor);
+			neighbors.push({neighbor, moveCost});
 			
 		});
 		return neighbors

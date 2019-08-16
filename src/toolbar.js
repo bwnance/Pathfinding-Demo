@@ -88,30 +88,31 @@ export default class Toolbar {
 			case "A_STAR":
 				const aStar = new AStar(this.board, this.settings);
 				aStar.start();
-				this.setStats(aStar.runtime, aStar.steps);
+				this.setStats(aStar.runtime, aStar.steps, aStar.pathLength);
 				break;
 			case "DIJKSTRA":
 				const dijkstra = new Dijkstra(this.board, this.settings);
 				dijkstra.start();
-				this.setStats(dijkstra.runtime, dijkstra.steps);
+				this.setStats(dijkstra.runtime, dijkstra.steps, dijkstra.pathLength);
 				break;
 			case "GOOD_BFS":
 				const goodBFS = new GoodBFS(this.board, this.settings);
 				goodBFS.start();
-				this.setStats(goodBFS.runtime, goodBFS.steps);
+				this.setStats(goodBFS.runtime, goodBFS.steps, goodBFS.pathLength);
 				break;
 			case "GREEDY":
 				const greedy = new GreedyBestFirst(this.board, this.settings);
 				greedy.start();
-				this.setStats(greedy.runtime, greedy.steps);
+				this.setStats(greedy.runtime, greedy.steps, greedy.pathLength);
 				break;
 		}
 	}
-	setStats(runtime, steps) {
+	setStats(runtime, steps, pathLength) {
 		document.getElementById(
 			"stats"
 		).children[0].innerText = `Runtime: ${runtime.toFixed(2)}ms`;
 		document.getElementById("stats").children[1].innerText = `Steps: ${steps}`;
+		document.getElementById("stats").children[2].innerText = `Path Length: ${pathLength}`;
 	}
 	handleAStarClick() {
 		this.currentAlgorithmElement.innerText = "A*";

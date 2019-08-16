@@ -55,8 +55,8 @@ export default class GreedyBestFirst {
 		}
 		path.push(this.graph.startNode);
 		const reversed = path.reverse();
+		this.pathLength = path.length;
 		let prev = path.shift();
-
 		reversed.forEach(el => {
 			// setTimeout(() => this.board.colorBox(el.x, el.y, "black", 4));
 			const prevCoords = [prev.x, prev.y];
@@ -89,7 +89,9 @@ export default class GreedyBestFirst {
 			const current = this.frontier.dequeue();
 			if (current.posKey === this.graph.endNode.posKey) break;
 			this.board.colorFrontier(current.x, current.y);
-			current.neighbors.forEach(neighbor => {
+			current.neighbors.forEach(neighborNode => {
+				const { neighbor, moveCost } = neighborNode;
+
 				if (!Object.keys(this.cameFrom).includes(neighbor.posKey)) {
 					const priority = neighbor.endDist;
 					this.frontier.enqueue(neighbor, priority);

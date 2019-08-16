@@ -13,7 +13,8 @@ export default class Settings{
                 return Heuristics.ManhattanDistance
             case 1:
             case 2:
-                return Heuristics.ChebyshevDistance
+                // return Heuristics.EuclidianDistance
+                return Heuristics.OctileDistance
         }
     }
     // getHeuristic(){

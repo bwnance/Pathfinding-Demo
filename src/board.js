@@ -80,9 +80,19 @@ export default class Board {
 		// text.translation = translation;
 		// this.twoFg.add(text);
 		const [xPos, yPos] = this.convertCoordinates(x, y);
-
-		const text = this.twoFg.makeText(message, xPos, yPos);
-		this.texts.push(text);
+		const posKey = JSON.stringify([xPos, yPos]);
+		if (this.texts[posKey]) {
+			if (parseInt(this.texts[posKey]) < parseInt(message)) {
+				this.twoFg.remove(this.texts[posKey]);
+				const text = this.twoFg.makeText(message, xPos, yPos);
+				text.size = 4;
+				this.texts[posKey] = text;
+			}
+		} else {
+			const text = this.twoFg.makeText(message, xPos, yPos);
+			text.size = 10;
+			this.texts[posKey] = text;
+		}
 	}
 	createBox(context, x, y, color, saveBox = false, objectType = 0) {
 		const [xPos, yPos] = this.convertCoordinates(x, y);
@@ -103,10 +113,10 @@ export default class Board {
 	}
 	clearPath(fromAlgo = true) {
 		this.saved = {};
-		this.texts.forEach(text => {
+		Object.values(this.texts).forEach(text => {
 			this.twoFg.remove(text);
 		});
-		this.texts = [];
+		this.texts = {};
 		// this.twoFg.clear();
 		this.lines.forEach(line => {
 			this.twoFg.remove(line);
@@ -131,10 +141,10 @@ export default class Board {
 	}
 	clearWalls() {
 		this.saved = {};
-		this.texts.forEach(text => {
+		Object.values(this.texts).forEach(text => {
 			this.twoFg.remove(text);
 		});
-		this.texts = [];
+		this.texts = {};
 		this.lines.forEach(line => {
 			this.twoFg.remove(line);
 		});

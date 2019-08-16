@@ -33,13 +33,13 @@ export default class AStar {
 		}
 		path.push(this.graph.startNode);
 		const reversed = path.reverse();
+		this.pathLength = path.length;
 		let prev = path.shift();
-
 		reversed.forEach(el => {
 			// setTimeout(() => this.board.colorBox(el.x, el.y, "black", 4));
 			const prevCoords = [prev.x, prev.y];
 			setTimeout(() =>
-				this.board.createLine(prevCoords, [el.x, el.y], "black", 4)
+				this.board.createLine(prevCoords, [el.x, el.y], "rgba(0,0,0,0.3)", 4)
 			);
 			prev = el;
 		});
@@ -98,8 +98,9 @@ export default class AStar {
 			const current = this.frontier.dequeue();
 			if (current.posKey === this.graph.endNode.posKey) break;
 			this.board.colorFrontier(current.x, current.y);
-			current.neighbors.forEach(neighbor => {
-				const newCost = this.costSoFar[current.posKey] + 1; //movement cost is always 1
+			current.neighbors.forEach(neighborNode => {
+				const { neighbor, moveCost } = neighborNode;
+				const newCost = this.costSoFar[current.posKey] + moveCost; //movement cost is always 1
 				if (
 					!Object.keys(this.costSoFar).includes(neighbor.posKey) ||
 					newCost < this.costSoFar[neighbor.posKey]
@@ -109,6 +110,13 @@ export default class AStar {
 					this.frontier.enqueue(neighbor, priority);
 					this.came_from[neighbor.posKey] = current;
 					this.board.colorNeighbor(neighbor.x, neighbor.y);
+					setTimeout(() =>
+						this.board.makeText(
+							neighbor.x,
+							neighbor.y,
+							(newCost + neighbor.endDist).toFixed(2)
+						)
+					);
 				}
 			});
 		}

@@ -51,8 +51,8 @@ export default class GoodBFS {
 		}
 		path.push(this.graph.startNode);
 		const reversed = path.reverse();
+		this.pathLength = path.length;
 		let prev = path.shift();
-
 		reversed.forEach(el => {
 			// setTimeout(() => this.board.colorBox(el.x, el.y, "black", 4));
 			const prevCoords = [prev.x, prev.y];
