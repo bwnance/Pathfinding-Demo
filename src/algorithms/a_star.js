@@ -39,7 +39,7 @@ export default class AStar {
 			// setTimeout(() => this.board.colorBox(el.x, el.y, "black", 4));
 			const prevCoords = [prev.x, prev.y];
 			setTimeout(() =>
-				this.board.createLine(prevCoords, [el.x, el.y], "rgba(0,0,0,0.3)", 4)
+				this.board.createLine(prevCoords, [el.x, el.y], "black", 4)
 			);
 			prev = el;
 		});
@@ -110,13 +110,13 @@ export default class AStar {
 					this.frontier.enqueue(neighbor, priority);
 					this.came_from[neighbor.posKey] = current;
 					this.board.colorNeighbor(neighbor.x, neighbor.y);
-					setTimeout(() =>
-						this.board.makeText(
-							neighbor.x,
-							neighbor.y,
-							(newCost + neighbor.endDist).toFixed(2)
-						)
-					);
+					// setTimeout(() =>
+					// 	this.board.makeText(
+					// 		neighbor.x,
+					// 		neighbor.y,
+					// 		(newCost + neighbor.endDist).toFixed(2)
+					// 	)
+					// );
 				}
 			});
 		}
