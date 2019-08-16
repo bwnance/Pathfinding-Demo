@@ -59,13 +59,13 @@ export default class BadBFS {
 			const current = this.frontier.pop();
 			if (JSON.stringify(current) === JSON.stringify(this.board.targetCoords))
 				break;
-			setTimeout(() => this.board.colorBox(...current, "yellow", 4), 0);
+			setTimeout(() => this.board.colorBox(...current, "#E9D6EC", 4), 0);
 
 			// this.board.deleteBox(...current)
 			const neighbors = this.getNeighbors(...current);
 			neighbors.forEach(el => {
 				this.frontier.unshift(el.pos);
-				setTimeout(() => this.board.colorBox(...el.pos, "blue", 5), 0);
+				setTimeout(() => this.board.colorBox(...el.pos, "#409679", 5), 0);
 				this.came_from[el.pos] = current;
 			});
 		}

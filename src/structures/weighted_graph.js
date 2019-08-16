@@ -1,15 +1,18 @@
-export default class Graph {
-	constructor(grid, settings) {
+export default class WeightedGraph {
+	constructor(board, settings) {
         this.settings = settings
 		this.nodes = {};
 		this.aMatrix = [];
-		this.grid = grid;
-		this.populateFromGrid(grid);
+		this.board = board;
+		this.grid = board.grid;
+		this.heuristic = settings.getHeuristic();
+		this.populateFromGrid(this.grid);
 	}
 	populateFromGrid(grid) {
 		grid.forEach((row, y) => {
 			row.forEach((el, x) => {
-				const node = new GraphNode(el.objectType, [x, y]);
+				const node = new WeightedGraphNode(el.objectType, [x, y]);
+				node.endDist = this.getEndCost(x,y);
 				this.nodes[`${x},${y}`] = node;
 				if (el.objectType === 2) this.startNode = node;
 				else if (el.objectType === 3) this.endNode = node;
@@ -18,6 +21,9 @@ export default class Graph {
 		Object.values(this.nodes).forEach(node => {
 			node.neighbors = this.neighbors(node);
 		});
+	}
+	getEndCost(x, y) {
+		return this.heuristic([x,y], this.board.targetCoords) * (1.0+0.0001)
 	}
 	neighbors(node) {
 		const neighbors = [];
@@ -64,11 +70,26 @@ export default class Graph {
 			}
 			neighbors.push(neighbor);
 		});
-		return neighbors;
+		return neighbors
+		// .sort((el1, el2) => {
+		// 	const totalCost1 = el1.endDist;
+		// 	const totalCost2 = el2.endDist;
+		// 	if(totalCost1 < totalCost2){
+		// 		return -1
+		// 	}
+		// 	if(totalCost2 === totalCost1){
+		// 		return 0;
+		// 	}
+		// 	if(totalCost2 > totalCost1){
+		// 		return 1
+		// 	}
+		// });
 	}
 }
-class GraphNode {
+class WeightedGraphNode {
 	constructor(oType, [x, y]) {
+		this.endDist = 0;
+		this.costStart = 0;
 		this.objectType = oType;
 		this.posKey = `${x},${y}`;
 		this.x = x;

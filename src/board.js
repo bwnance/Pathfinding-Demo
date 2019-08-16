@@ -15,6 +15,7 @@ export default class Board {
 		this.deleting = false;
 		this.building = false;
 		this.lastCoords = [];
+		this.texts = [];
 	}
 	setup() {
 		this.setupCanvases();
@@ -66,11 +67,21 @@ export default class Board {
 		}
 		this.twoFg.update();
 	}
+	makeText(x, y, message){
+		// const text = new Two.Text(message, x, y);
+		// const translation = new Two.Vector(x, y);
+		// text.translation = translation;
+		// this.twoFg.add(text);
+		const [xPos, yPos] = this.convertCoordinates(x, y);
+
+		const text = this.twoFg.makeText(message, xPos, yPos)
+		this.texts.push(text);
+	}
 	createBox(context, x, y, color, saveBox = false, objectType = 0) {
 		const [xPos, yPos] = this.convertCoordinates(x, y);
 		let box = context.makeRectangle(xPos, yPos, this.boxSize, this.boxSize);
 		// let dot = context.makeCircle(xPos, yPos, 5);
-		box.stroke = "rgb(180,180,180)";
+		// box.stroke = "rgb(180,180,180)";
 		box.fill = color;
 		this.grid[y][x] = {
 			box: saveBox ? box : null,
@@ -84,6 +95,10 @@ export default class Board {
 		};
 	}
 	clearPath() {
+		this.texts.forEach(text => {
+			this.twoFg.remove(text);
+		});
+		this.texts = [];
 		// this.twoFg.clear();
 		this.lines.forEach(line => {
 			this.twoFg.remove(line);
@@ -103,10 +118,10 @@ export default class Board {
 		this.twoFg.update();
 	}
 	clearWalls() {
-		this.lines.forEach(line => {
-			this.twoFg.remove(line);
+		this.texts.forEach(text => {
+			this.twoFg.remove(text);
 		});
-		this.lines = [];
+		this.texts = [];
 		// this.twoFg.clear();
 		this.grid.forEach((row, y) => {
 			row.forEach((el, x) => {
@@ -125,7 +140,12 @@ export default class Board {
 		const yPos = y * this.boxSize - this.boxSize / 2;
 		return [xPos, yPos];
 	}
-
+	safeDeleteBox(x,y){
+		const el = this.grid[y][x];
+		if(el.objectType === 1){
+			this.deleteBox(x,y);
+		}
+	}
 	deleteBox(x, y) {
 		const el = this.grid[y][x];
 		el.objectType = 0;
@@ -141,7 +161,7 @@ export default class Board {
 			this.grid[y] = [];
 			for (let x = 1; x <= numLinesX; x++) {
 				// const xStep = x * this.boxSize - this.boxSize / 2;
-				this.createBox(this.twoBg, x, y, "rgba(0,0,0,0)");
+				this.createBox(this.twoBg, x, y, "#353535");
 				// let box = this.twoBg.makeRectangle(
 				// 	xStep,
 				// 	yStep,
@@ -193,11 +213,11 @@ export default class Board {
 		this.deleteBox(...this.startCoords);
 	}
 	setStart(x, y) {
-		this.colorBox(x, y, "green", 2, true);
+		this.colorBox(x, y, "#BFDBF7", 2, true);
 		this.startCoords = [x, y];
 	}
 	setTarget(x, y) {
-		this.colorBox(x, y, "red", 3, true);
+		this.colorBox(x, y, "#A31621", 3, true);
 		this.targetCoords = [x, y];
 	}
 	addListeners() {
@@ -266,7 +286,7 @@ export default class Board {
 			return
 		}
 		if (this.deleting) {
-			this.deleteBox(x, y);
+			this.safeDeleteBox(x, y);
 			return
 		}
 	}
