@@ -193,7 +193,7 @@ export default class Board {
 	setupCanvases() {
 		const height =
 			this.boxSize +
-			Math.floor(this.el.offsetHeight / this.boxSize) * this.boxSize -1;
+			Math.floor(this.el.offsetHeight / this.boxSize) * this.boxSize;
 
 		const width =
 			this.boxSize +
@@ -247,6 +247,7 @@ export default class Board {
 		this.el.addEventListener("mousemove", this.handleMouseMove.bind(this));
 		this.el.addEventListener("mousedown", this.handleMouseDown.bind(this));
 		this.el.addEventListener("mouseup", this.handleMouseUp.bind(this));
+		// this.el.addEventListener("mouseleave",)
 	}
 	handleMouseUp(e) {
 		const x = Math.floor(e.layerX / this.boxSize) + 1;
@@ -319,14 +320,14 @@ export default class Board {
 			this.saved[JSON.stringify(realCoords)] = Object.assign({}, currentBox);
 		}
 		if (this.carryingEnd) {
-			if (currentBox.objectType !== 2) {
+			if (currentBox.objectType !== 2 && currentBox.objectType !== 1) {
 				this.clearEnd();
 				this.setTarget(x, y);
 			}
 			// return;
 		}
 		if (this.carryingStart) {
-			if (currentBox.objectType !== 3) {
+			if (currentBox.objectType !== 3 && currentBox.objectType !== 1) {
 				this.clearStart();
 				this.setStart(x, y);
 			}

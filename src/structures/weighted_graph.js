@@ -29,6 +29,7 @@ export default class WeightedGraph {
 		const neighbors = [];
 		const horVertDirs = [[0, 1], [1, 0], [-1, 0], [0, -1]];
 		const diagDirs = [[1, 1], [-1, -1], [-1, 1], [1, -1]];
+		let moveCost = 1;
 		let dirs;
 		switch (this.settings.mode) {
 			case 0:
@@ -53,6 +54,7 @@ export default class WeightedGraph {
 			const neighbor = this.nodes[`${newDir.x},${newDir.y}`];
 			if (neighbor.objectType === 1) return;
 			if ((dir[0] === -1 && dir[1] === -1) || (dir[0] === 1 && dir[1] === 1)) {
+				moveCost = 1;
 				const testDir1 = { x: newDir.x - dir[1], y: newDir.y };
 				const testDir2 = { x: newDir.x, y: newDir.y - dir[1] };
 				const testNode1 = this.nodes[`${testDir1.x},${testDir1.y}`];
@@ -62,6 +64,7 @@ export default class WeightedGraph {
 				(dir[0] === -1 && dir[1] === 1) ||
 				(dir[0] === 1 && dir[1] === -1)
 			) {
+				moveCost = 1
 				const testDir1 = { x: newDir.x + dir[1], y: newDir.y };
 				const testDir2 = { x: newDir.x, y: newDir.y + dir[0] };
 				const testNode1 = this.nodes[`${testDir1.x},${testDir1.y}`];
@@ -69,6 +72,7 @@ export default class WeightedGraph {
 				if (testNode1.objectType === 1 || testNode2.objectType === 1) return;
 			}
 			neighbors.push(neighbor);
+			
 		});
 		return neighbors
 		// .sort((el1, el2) => {
@@ -89,7 +93,7 @@ export default class WeightedGraph {
 class WeightedGraphNode {
 	constructor(oType, [x, y]) {
 		this.endDist = 0;
-		this.costStart = 0;
+		this.moveCost = 1;
 		this.objectType = oType;
 		this.posKey = `${x},${y}`;
 		this.x = x;
