@@ -3,6 +3,7 @@ import GoodBFS from "./algorithms/good_bfs";
 import Dijkstra from "./algorithms/dijkstra";
 import GreedyBestFirst from "./algorithms/greedy_best_first";
 import AStar from "./algorithms/a_star";
+import Two from "two.js";
 export default class Toolbar {
 	constructor(settings, board) {
 		this.board = board;
@@ -17,6 +18,9 @@ export default class Toolbar {
 		this.handleGreedyBestFirstClick = this.handleGreedyBestFirstClick.bind(
 			this
 		);
+		this.handleSVGClick = this.handleSVGClick.bind(this);
+		this.handleWebGLClick = this.handleWebGLClick.bind(this);
+		this.handleCanvasClick = this.handleCanvasClick.bind(this);
 		this.currentAlgorithmElement = document.getElementById("current-algorithm");
 		this.setupEventListeners();
 	}
@@ -42,9 +46,37 @@ export default class Toolbar {
 		document
 			.getElementById("clear-path")
 			.addEventListener("click", this.handleClearPath);
+
+		document
+			.getElementById("svg-label")
+			.addEventListener("click", this.handleSVGClick);
+		document
+			.getElementById("webgl-label")
+			.addEventListener("click", this.handleWebGLClick);
+		document
+			.getElementById("canvas-label")
+			.addEventListener("click", this.handleCanvasClick);
+	}
+	handleSVGClick() {
+		if (this.board.params.type === Two.Types.svg) return;
+		this.board.params.type = Two.Types.svg;
+		this.board.destroyFG();
+		this.board.setupFG();
+	}
+	handleWebGLClick() {
+		if (this.board.params.type === Two.Types.webgl) return;
+		this.board.params.type = Two.Types.webgl;
+		this.board.destroyFG();
+		this.board.setupFG();
+	}
+	handleCanvasClick() {
+		if (this.board.params.type === Two.Types.canvas) return;
+		this.board.params.type = Two.Types.canvas;
+		this.board.destroyFG();
+		this.board.setupFG();
 	}
 	handleSearchClick() {
-		const radioParent = document.getElementsByClassName("radios")[0];
+		const radioParent = document.getElementsByClassName("mode-radios")[0];
 		for (let i = 0; i < radioParent.children.length; i++) {
 			const radio = radioParent.children[i].children[0];
 			if (radio.checked) {
@@ -56,7 +88,7 @@ export default class Toolbar {
 			case "A_STAR":
 				const aStar = new AStar(this.board, this.settings);
 				aStar.start();
-				this.setStats(aStar.runtime, aStar.steps)
+				this.setStats(aStar.runtime, aStar.steps);
 				break;
 			case "DIJKSTRA":
 				const dijkstra = new Dijkstra(this.board, this.settings);
@@ -76,8 +108,10 @@ export default class Toolbar {
 		}
 	}
 	setStats(runtime, steps) {
-		document.getElementById("stats").children[0].innerText = `Runtime: ${runtime.toFixed(2)}ms`
-		document.getElementById("stats").children[1].innerText = `Steps: ${steps}`
+		document.getElementById(
+			"stats"
+		).children[0].innerText = `Runtime: ${runtime.toFixed(2)}ms`;
+		document.getElementById("stats").children[1].innerText = `Steps: ${steps}`;
 	}
 	handleAStarClick() {
 		this.currentAlgorithmElement.innerText = "A*";

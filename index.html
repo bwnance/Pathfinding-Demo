@@ -31,7 +31,7 @@
 					<h2>
 						Search Mode
 					</h2>
-					<ul class="radios">
+					<ul class="mode-radios">
 						<li>
 							<input
 								name="mode"
@@ -43,12 +43,36 @@
 							<label for="octolinear">Octilinear</label>
 						</li>
 						<li>
-							<input name="mode" value="0" id="orthogonal" type="radio" />
+							<input
+								name="mode"
+								value="0"
+								id="orthogonal"
+								type="radio"
+							/>
 							<label for="orthogonal">Orthogonal</label>
 						</li>
 						<li>
 							<input name="mode" value="2" id="diagonal" type="radio" />
 							<label for="diagonal">Diagonal</label>
+						</li>
+					</ul>
+				</div>
+				<div class="info-subsection">
+					<h2>
+						Render Mode
+					</h2>
+					<ul class="render-radios">
+						<li>
+							<input name="render-mode" value="1" id="svg" type="radio" checked />
+							<label id="svg-label" for="svg">SVG</label>
+						</li>
+						<li>
+							<input name="render-mode" value="0" id="webgl" type="radio" />
+							<label id="webgl-label" for="webgl">WebGL</label>
+						</li>
+						<li>
+							<input name="render-mode" value="2" id="canvas" type="radio" />
+							<label id="canvas-label" for="canvas">Canvas</label>
 						</li>
 					</ul>
 				</div>
@@ -58,7 +82,9 @@
 				<div class="steps"></div>
 			</section>
 			<section id="personal-links">
-				<a target="_blank" href="https://github.com/bwnance"><i data-feather="github"></i></a>
+				<a target="_blank" href="https://github.com/bwnance"
+					><i data-feather="github"></i
+				></a>
 				<a target="_blank" href="https://www.linkedin.com/in/bwnance/"
 					><i data-feather="linkedin"></i
 				></a>

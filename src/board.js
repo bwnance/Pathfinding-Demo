@@ -23,11 +23,10 @@ export default class Board {
 		this.addListeners();
 	}
 
-	setupBG(params) {
-		this.twoBg = new Two(params).appendTo(this.el);
-
-		this.setupGrid(params);
-		this.twoBg.render();
+	setupBG() {
+		this.twoBg = new Two(this.params).appendTo(this.el);
+		this.setupGrid();
+		this.twoBg.update();
 	}
 	createPath(args) {
 		const anchors = [];
@@ -102,7 +101,7 @@ export default class Board {
 			}
 		};
 	}
-	clearPath(fromAlgo=true) {
+	clearPath(fromAlgo = true) {
 		this.saved = {};
 		this.texts.forEach(text => {
 			this.twoFg.remove(text);
@@ -124,7 +123,7 @@ export default class Board {
 		});
 		this.setStart(...this.startCoords);
 		this.setTarget(...this.targetCoords);
-		if(fromAlgo){
+		if (fromAlgo) {
 			this.saved[JSON.stringify(this.startCoords)] = { objectType: 4 };
 			this.saved[JSON.stringify(this.targetCoords)] = { objectType: 4 };
 		}
@@ -176,9 +175,9 @@ export default class Board {
 		el.box = null;
 		this.twoFg.update();
 	}
-	setupGrid(params) {
-		const numLinesY = params.height / this.boxSize;
-		const numLinesX = params.width / this.boxSize;
+	setupGrid() {
+		const numLinesY = this.params.height / this.boxSize;
+		const numLinesX = this.params.width / this.boxSize;
 		for (let y = 1; y <= numLinesY; y++) {
 			this.grid[y] = [];
 			for (let x = 1; x <= numLinesX; x++) {
@@ -186,9 +185,15 @@ export default class Board {
 			}
 		}
 	}
-	setupFG(params) {
-		this.twoFg = new Two(params).appendTo(this.el);
-		this.twoBg.render();
+	setupFG() {
+		this.twoFg = new Two(this.params).appendTo(this.el);
+		this.setStart(10, 10);
+		this.setTarget(17, 10);
+		this.twoFg.update();
+	}
+	destroyFG() {
+		this.el.removeChild(this.el.children[1]);
+		this.setupGrid();
 	}
 	setupCanvases() {
 		const height =
@@ -199,13 +204,13 @@ export default class Board {
 			this.boxSize +
 			Math.floor(this.el.offsetWidth / this.boxSize) * this.boxSize;
 
-		const params = {
+		this.params = {
 			width: width,
 			height: height,
 			type: Two.Types.svg
 		};
-		this.setupBG(params);
-		this.setupFG(params);
+		this.setupBG();
+		this.setupFG();
 	}
 	clearEnd() {
 		const savedBox = this.saved[JSON.stringify(this.targetCoords)];
