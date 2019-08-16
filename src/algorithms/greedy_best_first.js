@@ -35,9 +35,9 @@ export default class GreedyBestFirst {
 				setTimeout(() =>
 					this.board.colorBox(neighbor.x, neighbor.y, "#409679", 5)
 				);
-				setTimeout(() =>
-					this.board.makeText(current.x, current.y, current.endDist)
-				);
+				// setTimeout(() =>
+				// 	this.board.makeText(current.x, current.y, current.endDist)
+				// );
 			}
 		});
 		this.recursiveStep();

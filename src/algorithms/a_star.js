@@ -146,7 +146,7 @@ export default class AStar {
 					setTimeout(() =>
 						this.board.colorBox(neighbor.x, neighbor.y, "#409679", 5)
 					);
-					setTimeout(() => this.board.makeText(current.x, current.y, priority));
+					// setTimeout(() => this.board.makeText(current.x, current.y, priority));
 				}
 			});
 		}
