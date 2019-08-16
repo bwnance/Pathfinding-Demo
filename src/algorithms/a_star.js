@@ -20,10 +20,16 @@ export default class AStar {
 
 	drawPath() {
 		let current = this.graph.endNode;
+		if (!current) return;
+
 		const path = [];
 		while (current.posKey !== this.graph.startNode.posKey) {
 			path.push(current);
 			current = this.came_from[current.posKey];
+			if (!current) {
+				path.shift();
+				return;
+			}
 		}
 		path.push(this.graph.startNode);
 		const reversed = path.reverse();
@@ -59,10 +65,7 @@ export default class AStar {
 			setTimeout(() => this.drawPath());
 			return;
 		}
-		setTimeout(() =>
-			this.board.colorBox(current.x, current.y, "#E9D6EC", 4)
-		);
-
+		this.board.colorFrontier(current.x, current.y);
 		current.neighbors.forEach(neighbor => {
 			const newCost = this.costSoFar[current.posKey] + 1; //movement cost is always 1
 			if (
@@ -73,9 +76,8 @@ export default class AStar {
 				const priority = newCost + neighbor.endDist;
 				this.frontier.enqueue(neighbor, priority);
 				this.came_from[neighbor.posKey] = current;
-				setTimeout(() =>
-					this.board.colorBox(neighbor.x, neighbor.y, "#409679", 5)
-				);
+
+				this.board.colorNeighbor(neighbor.x, neighbor.y);
 			}
 		});
 		this.recursiveStep();
@@ -83,16 +85,19 @@ export default class AStar {
 	start() {
 		this.initializeGraph();
 		this.board.clearPath();
+		const startTime = performance.now();
 		this.frontier = new PriorityQueue();
 		this.frontier.enqueue(this.graph.startNode, 0);
+		this.steps = 0;
 		this.costSoFar = {};
 		this.came_from = {};
 		this.costSoFar[this.graph.startNode.posKey] = 0;
 		this.came_from[this.graph.startNode.posKey] = null;
 		while (!this.frontier.isEmpty()) {
+			this.steps += 1;
 			const current = this.frontier.dequeue();
 			if (current.posKey === this.graph.endNode.posKey) break;
-			setTimeout(() => this.board.colorBox(current.x, current.y, "#E9D6EC", 4));
+			this.board.colorFrontier(current.x, current.y);
 			current.neighbors.forEach(neighbor => {
 				const newCost = this.costSoFar[current.posKey] + 1; //movement cost is always 1
 				if (
@@ -103,55 +108,12 @@ export default class AStar {
 					const priority = newCost + neighbor.endDist;
 					this.frontier.enqueue(neighbor, priority);
 					this.came_from[neighbor.posKey] = current;
-					setTimeout(() =>
-						this.board.colorBox(neighbor.x, neighbor.y, "#409679", 5)
-					);
+					this.board.colorNeighbor(neighbor.x, neighbor.y);
 				}
 			});
 		}
+		const endTime = performance.now();
+		this.runtime = endTime - startTime;
 		this.drawPath();
-	}
-
-	startOld() {
-		this.initializeGraph();
-		this.board.clearPath();
-		this.frontier = new PriorityQueue();
-		this.frontier.enqueue(this.graph.startNode, 0);
-		this.came_from = {};
-		const lookedAt = [];
-		this.costSoFar = {};
-		this.came_from[this.graph.startNode.posKey] = null;
-		this.costSoFar[this.graph.startNode.posKey] = 0;
-
-		while (!this.frontier.isEmpty()) {
-			const current = this.frontier.dequeue();
-			if (current.posKey === this.graph.endNode.posKey) break;
-			setTimeout(() => this.board.colorBox(current.x, current.y, "#E9D6EC", 4));
-			// setTimeout(() => this.board.colorBox(current.x, current.y, "#E9D6EC", 4));
-			current.neighbors.forEach(neighbor => {
-				lookedAt.push(neighbor.posKey);
-				const new_cost = current.costStart; // would actually be cost between current and neighbor
-				// if (!Object.keys(this.came_from).includes(neighbor.posKey)) {
-				if (
-					!Object.keys(this.costSoFar).includes(neighbor.posKey) ||
-					new_cost < this.costSoFar[neighbor.posKey]
-				) {
-					// console.log("included");
-					// this.costSoFar[neighbor.posKey] = new_cost;
-					const priority = new_cost + neighbor.endDist;
-					this.frontier.enqueue(neighbor, priority);
-					this.came_from[neighbor.posKey] = current;
-					debugger;
-
-					setTimeout(() =>
-						this.board.colorBox(neighbor.x, neighbor.y, "#409679", 5)
-					);
-					// setTimeout(() => this.board.makeText(current.x, current.y, priority));
-				}
-			});
-		}
-		this.drawPath();
-		console.log(lookedAt.length);
-		console.log(Object.keys(cost_so_far).length);
 	}
 }

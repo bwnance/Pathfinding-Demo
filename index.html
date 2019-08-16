@@ -1,30 +1,71 @@
 <html>
-    <head>
-    <script src="./dist/main.js"></script>
-    <link rel="stylesheet" href="./dist/main.css" />
-
-
-    </head>
-    <body>
-        <container id="demo-container">
-            <section id="render-section">
-            </section>
-            <section id="info-section">
-                <div id="current-algorithm">Dijkstra's Algorithm</div>
-                <div class="algorithms-container">
-                    <button id="good-bfs" type="button">BFS Algorithm</button>
-                    <button id="dijkstra" type="button">Dijkstra's Algorithm</button>
-                    <button id="greedy" type="button">Greedy Best First Algorithm</button>
-                    <button id="a*" type="button">A* Algorithm</button>
-                </div>
-                <!-- <button id="theta*" type="button">Theta* Algorithm</button> -->
-                <button id="search" type="button">Search!</button>
-                <div class="clear-btns">
-                    <button id="clear-walls" type="button">Clear walls</button>
-                    <button id="clear-path" type="button">Clear path</button>
-
-                </div>
-            </section>
-        </container>
-    </body>
+	<head>
+		<script src="./dist/main.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.24.0/feather.min.js"></script>
+		<link rel="stylesheet" href="./dist/main.css" />
+	</head>
+	<body>
+		<container id="demo-container">
+			<section id="render-section"></section>
+			<section id="info-section">
+				<div class="info-subsection algorithms-container">
+					<h1 id="current-algorithm">A*</h1>
+					<div class="algorithms-container">
+						<button id="good-bfs" type="button">BFS Algorithm</button>
+						<button id="dijkstra" type="button">Dijkstra's Algorithm</button>
+						<button id="greedy" type="button">
+							Greedy Best First Algorithm
+						</button>
+						<button id="a*" type="button">A* Algorithm</button>
+					</div>
+					<!-- <button id="theta*" type="button">Theta* Algorithm</button> -->
+					<div class="buttons">
+						<button id="search" type="button">Search!</button>
+						<div class="clear-btns">
+							<button id="clear-walls" type="button">Clear walls</button>
+							<button id="clear-path" type="button">Clear path</button>
+						</div>
+					</div>
+				</div>
+				<div class="info-subsection">
+					<h2>
+						Search Mode
+					</h2>
+					<ul class="radios">
+						<li>
+							<input
+								name="mode"
+								value="1"
+								id="octolinear"
+								type="radio"
+								checked
+							/>
+							<label for="octolinear">Octilinear</label>
+						</li>
+						<li>
+							<input name="mode" value="0" id="orthogonal" type="radio" />
+							<label for="orthogonal">Orthogonal</label>
+						</li>
+						<li>
+							<input name="mode" value="2" id="diagonal" type="radio" />
+							<label for="diagonal">Diagonal</label>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section id="stats">
+				<div class="runtime"></div>
+				<div class="steps"></div>
+			</section>
+			<section id="personal-links">
+				<a target="_blank" href="https://github.com/bwnance"><i data-feather="github"></i></a>
+				<a target="_blank" href="https://www.linkedin.com/in/bwnance/"
+					><i data-feather="linkedin"></i
+				></a>
+			</section>
+		</container>
+		<script>
+			feather.replace();
+		</script>
+	</body>
 </html>

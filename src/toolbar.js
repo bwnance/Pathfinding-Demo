@@ -14,7 +14,9 @@ export default class Toolbar {
 		this.handleBadBFSClick = this.handleBadBFSClick.bind(this);
 		this.handleGoodBFSClick = this.handleGoodBFSClick.bind(this);
 		this.handleDijkstraClick = this.handleDijkstraClick.bind(this);
-		this.handleGreedyBestFirstClick = this.handleGreedyBestFirstClick.bind(this);
+		this.handleGreedyBestFirstClick = this.handleGreedyBestFirstClick.bind(
+			this
+		);
 		this.currentAlgorithmElement = document.getElementById("current-algorithm");
 		this.setupEventListeners();
 	}
@@ -42,50 +44,64 @@ export default class Toolbar {
 			.addEventListener("click", this.handleClearPath);
 	}
 	handleSearchClick() {
+		const radioParent = document.getElementsByClassName("radios")[0];
+		for (let i = 0; i < radioParent.children.length; i++) {
+			const radio = radioParent.children[i].children[0];
+			if (radio.checked) {
+				this.settings.mode = parseInt(radio.value);
+				break;
+			}
+		}
 		switch (this.settings.algorithm) {
 			case "A_STAR":
 				const aStar = new AStar(this.board, this.settings);
-				aStar.startRecursive();
+				aStar.start();
+				this.setStats(aStar.runtime, aStar.steps)
 				break;
 			case "DIJKSTRA":
 				const dijkstra = new Dijkstra(this.board, this.settings);
-				dijkstra.startRecursive();
+				dijkstra.start();
+				this.setStats(dijkstra.runtime, dijkstra.steps);
 				break;
 			case "GOOD_BFS":
 				const goodBFS = new GoodBFS(this.board, this.settings);
-				goodBFS.startRecursive();
+				goodBFS.start();
+				this.setStats(goodBFS.runtime, goodBFS.steps);
 				break;
 			case "GREEDY":
 				const greedy = new GreedyBestFirst(this.board, this.settings);
-				greedy.startRecursive();
+				greedy.start();
+				this.setStats(greedy.runtime, greedy.steps);
 				break;
 		}
 	}
+	setStats(runtime, steps) {
+		document.getElementById("stats").children[0].innerText = `Runtime: ${runtime.toFixed(2)}ms`
+		document.getElementById("stats").children[1].innerText = `Steps: ${steps}`
+	}
 	handleAStarClick() {
-		this.currentAlgorithmElement.innerText = "A* Algorithm";
+		this.currentAlgorithmElement.innerText = "A*";
 		this.settings.algorithm = "A_STAR";
 	}
 	handleBadBFSClick() {
 		this.settings.algorithm = "BAD_BFS";
 	}
 	handleGoodBFSClick() {
-		this.currentAlgorithmElement.innerText =
-			"Good Breadth First Search Algorithm";
+		this.currentAlgorithmElement.innerText = "Breadth First Search";
 		this.settings.algorithm = "GOOD_BFS";
 	}
 	handleGreedyBestFirstClick() {
-		this.currentAlgorithmElement.innerText =
-			"Greedy Best-First Search Algorithm";
+		this.currentAlgorithmElement.innerText = "Greedy Best-First Search";
 		this.settings.algorithm = "GREEDY";
 	}
 	handleDijkstraClick() {
-		this.currentAlgorithmElement.innerText = "Dijkstra's Algorithm";
+		this.currentAlgorithmElement.innerText = "Dijkstra";
 		this.settings.algorithm = "DIJKSTRA";
 	}
 	handleClearWalls() {
 		this.board.clearWalls();
 	}
 	handleClearPath() {
-		this.board.clearPath();
+		this.board.clearPath(false);
 	}
 }

@@ -16,6 +16,7 @@ export default class Board {
 		this.building = false;
 		this.lastCoords = [];
 		this.texts = [];
+		this.saved = {};
 	}
 	setup() {
 		this.setupCanvases();
@@ -52,6 +53,12 @@ export default class Board {
 		this.lines.push(line);
 		this.twoFg.update();
 	}
+	colorFrontier(x, y) {
+		setTimeout(() => this.colorBox(x, y, "#E9D6EC", 4));
+	}
+	colorNeighbor(x, y) {
+		setTimeout(() => this.colorBox(x, y, "#79C6AD", 5));
+	}
 	colorBox(x, y, color, objectType = 1, override = false) {
 		const stringCoords = JSON.stringify([x, y]);
 		if (
@@ -62,19 +69,20 @@ export default class Board {
 			return;
 		if (this.grid[y][x].box) {
 			this.grid[y][x].box.fill = color;
+			this.grid[y][x].objectType = objectType;
 		} else {
 			this.createBox(this.twoFg, x, y, color, true, objectType);
 		}
 		this.twoFg.update();
 	}
-	makeText(x, y, message){
+	makeText(x, y, message) {
 		// const text = new Two.Text(message, x, y);
 		// const translation = new Two.Vector(x, y);
 		// text.translation = translation;
 		// this.twoFg.add(text);
 		const [xPos, yPos] = this.convertCoordinates(x, y);
 
-		const text = this.twoFg.makeText(message, xPos, yPos)
+		const text = this.twoFg.makeText(message, xPos, yPos);
 		this.texts.push(text);
 	}
 	createBox(context, x, y, color, saveBox = false, objectType = 0) {
@@ -94,7 +102,8 @@ export default class Board {
 			}
 		};
 	}
-	clearPath() {
+	clearPath(fromAlgo=true) {
+		this.saved = {};
 		this.texts.forEach(text => {
 			this.twoFg.remove(text);
 		});
@@ -115,13 +124,22 @@ export default class Board {
 		});
 		this.setStart(...this.startCoords);
 		this.setTarget(...this.targetCoords);
+		if(fromAlgo){
+			this.saved[JSON.stringify(this.startCoords)] = { objectType: 4 };
+			this.saved[JSON.stringify(this.targetCoords)] = { objectType: 4 };
+		}
 		this.twoFg.update();
 	}
 	clearWalls() {
+		this.saved = {};
 		this.texts.forEach(text => {
 			this.twoFg.remove(text);
 		});
 		this.texts = [];
+		this.lines.forEach(line => {
+			this.twoFg.remove(line);
+		});
+		this.lines = [];
 		// this.twoFg.clear();
 		this.grid.forEach((row, y) => {
 			row.forEach((el, x) => {
@@ -140,10 +158,15 @@ export default class Board {
 		const yPos = y * this.boxSize - this.boxSize / 2;
 		return [xPos, yPos];
 	}
-	safeDeleteBox(x,y){
+	convertFromScreenCoords(sx, sy) {
+		const x = Math.floor(sx / this.boxSize) + 1;
+		const y = Math.floor(sy / this.boxSize) + 1;
+		return [x, y];
+	}
+	safeDeleteBox(x, y) {
 		const el = this.grid[y][x];
-		if(el.objectType === 1){
-			this.deleteBox(x,y);
+		if (el.objectType === 1) {
+			this.deleteBox(x, y);
 		}
 	}
 	deleteBox(x, y) {
@@ -157,31 +180,9 @@ export default class Board {
 		const numLinesY = params.height / this.boxSize;
 		const numLinesX = params.width / this.boxSize;
 		for (let y = 1; y <= numLinesY; y++) {
-			// const yStep = y * this.boxSize - this.boxSize / 2;
 			this.grid[y] = [];
 			for (let x = 1; x <= numLinesX; x++) {
-				// const xStep = x * this.boxSize - this.boxSize / 2;
 				this.createBox(this.twoBg, x, y, "#353535");
-				// let box = this.twoBg.makeRectangle(
-				// 	xStep,
-				// 	yStep,
-				// 	this.boxSize,
-				// 	this.boxSize
-				// );
-				// // box = this.twoFg.makeRectangle(xStep, yStep, boxSize, boxSize);
-				// box.stroke = "rgb(180,180,180)";
-				// box.fill = "rgba(0,0,0,0)";
-
-				// this.grid[y].push({
-				// 	box: null,
-				// 	objectType: 0,
-				// 	boxInfo: {
-				// 		x: xStep,
-				// 		y: yStep,
-				// 		width: this.boxSize,
-				// 		height: this.boxSize
-				// 	}
-				// });
 			}
 		}
 	}
@@ -207,13 +208,35 @@ export default class Board {
 		this.setupFG(params);
 	}
 	clearEnd() {
-		this.deleteBox(...this.targetCoords);
+		const savedBox = this.saved[JSON.stringify(this.targetCoords)];
+		const [px, py] = this.targetCoords;
+		if (savedBox) {
+			if (savedBox.objectType === 4) {
+				this.colorFrontier(px, py);
+			} else if (savedBox.objectType === 5) {
+				this.colorNeighbor(px, py);
+			}
+			delete this.saved[JSON.stringify(this.targetCoords)];
+		} else {
+			this.deleteBox(...this.targetCoords);
+		}
 	}
 	clearStart() {
-		this.deleteBox(...this.startCoords);
+		const savedBox = this.saved[JSON.stringify(this.startCoords)];
+		const [px, py] = this.startCoords;
+		if (savedBox) {
+			if (savedBox.objectType === 4) {
+				this.colorFrontier(px, py);
+			} else if (savedBox.objectType === 5) {
+				this.colorNeighbor(px, py);
+			}
+			delete this.saved[JSON.stringify(this.startCoords)];
+		} else {
+			this.deleteBox(...this.startCoords);
+		}
 	}
 	setStart(x, y) {
-		this.colorBox(x, y, "#BFDBF7", 2, true);
+		this.colorBox(x, y, "#80BBF7", 2, true);
 		this.startCoords = [x, y];
 	}
 	setTarget(x, y) {
@@ -224,7 +247,6 @@ export default class Board {
 		this.el.addEventListener("mousemove", this.handleMouseMove.bind(this));
 		this.el.addEventListener("mousedown", this.handleMouseDown.bind(this));
 		this.el.addEventListener("mouseup", this.handleMouseUp.bind(this));
-		document.oncontextmenu = () => false;
 	}
 	handleMouseUp(e) {
 		const x = Math.floor(e.layerX / this.boxSize) + 1;
@@ -235,10 +257,10 @@ export default class Board {
 		if (this.carryingEnd) {
 			this.carryingEnd = false;
 		}
-		if(this.building){
+		if (this.building) {
 			this.building = false;
 		}
-		if(this.deleting){
+		if (this.deleting) {
 			this.deleting = false;
 		}
 	}
@@ -254,41 +276,85 @@ export default class Board {
 			this.carryingEnd = true;
 			return;
 		}
-		if (this.grid[y][x].objectType === 0) {
+		if (this.grid[y][x].objectType !== 1) {
+			const currentBox = this.grid[y][x];
+			if (currentBox.objectType === 4 || currentBox.objectType === 5) {
+				const realCoords = this.convertFromScreenCoords(
+					currentBox.boxInfo.x,
+					currentBox.boxInfo.y
+				);
+				this.saved[JSON.stringify(realCoords)] = Object.assign({}, currentBox);
+			}
 			this.building = true;
 			this.colorBox(x, y, "rgb(150, 150, 150)", 1);
-			return
+			return;
 		}
 		if (this.grid[y][x].objectType === 1) {
 			this.deleting = true;
-			this.deleteBox(x, y);
-			return
+			const savedBox = this.saved[JSON.stringify([x, y])];
+			if (savedBox) {
+				if (savedBox.objectType === 4) {
+					this.colorFrontier(x, y);
+				} else if (savedBox.objectType === 5) {
+					this.colorNeighbor(x, y);
+				}
+				delete this.saved[JSON.stringify([x, y])];
+			} else {
+				this.deleteBox(x, y);
+			}
+			return;
 		}
 	}
 	handleMouseMove(e) {
 		const x = Math.floor(e.layerX / this.boxSize) + 1;
 		const y = Math.floor(e.layerY / this.boxSize) + 1;
 		if (!this.grid[y] || !this.grid[y][x]) return;
-		if(JSON.stringify(this.lastCoords) === JSON.stringify([x,y])) return
-		this.lastCoords = [x,y];
+		if (JSON.stringify(this.lastCoords) === JSON.stringify([x, y])) return;
+		const currentBox = this.grid[y][x];
+		if (currentBox.objectType === 4 || currentBox.objectType === 5) {
+			const realCoords = this.convertFromScreenCoords(
+				currentBox.boxInfo.x,
+				currentBox.boxInfo.y
+			);
+			this.saved[JSON.stringify(realCoords)] = Object.assign({}, currentBox);
+		}
 		if (this.carryingEnd) {
-			this.clearEnd();
-			this.setTarget(x, y);
-			return;
+			if (currentBox.objectType !== 2) {
+				this.clearEnd();
+				this.setTarget(x, y);
+			}
+			// return;
 		}
 		if (this.carryingStart) {
-			this.clearStart();
-			this.setStart(x, y);
-			return;
+			if (currentBox.objectType !== 3) {
+				this.clearStart();
+				this.setStart(x, y);
+			}
+			// return;
 		}
 		if (this.building) {
 			this.colorBox(x, y, "rgb(150, 150, 150)", 1);
-			return
+			// this.restoreSaved();
+
+			// return;
 		}
 		if (this.deleting) {
-			this.safeDeleteBox(x, y);
-			return
+			const savedBox = this.saved[JSON.stringify([x, y])];
+			if (savedBox) {
+				if (savedBox.objectType === 4) {
+					this.colorFrontier(x, y);
+				} else if (savedBox.objectType === 5) {
+					this.colorNeighbor(x, y);
+				}
+				// delete this.saved[JSON.stringify([x, y])];
+			} else {
+				this.safeDeleteBox(x, y);
+			}
+			// return;
 		}
+
+		this.lastCoords = [x, y];
 	}
+	restoreSaved(x, y) {}
 	run() {}
 }
