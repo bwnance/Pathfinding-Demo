@@ -15,12 +15,17 @@ export default class Toolbar {
 		this.handleBadBFSClick = this.handleBadBFSClick.bind(this);
 		this.handleGoodBFSClick = this.handleGoodBFSClick.bind(this);
 		this.handleDijkstraClick = this.handleDijkstraClick.bind(this);
-		this.handleGreedyBestFirstClick = this.handleGreedyBestFirstClick.bind(
-			this
-		);
+		this.handleBestFirstClick = this.handleBestFirstClick.bind(this);
 		this.handleSVGClick = this.handleSVGClick.bind(this);
 		this.handleWebGLClick = this.handleWebGLClick.bind(this);
 		this.handleCanvasClick = this.handleCanvasClick.bind(this);
+		this.handleManhattanClick = this.handleManhattanClick.bind(this);
+		this.handleChebyshevClick = this.handleChebyshevClick.bind(this);
+		this.handleEuclidianClick = this.handleEuclidianClick.bind(this);
+		this.handleOctileClick = this.handleOctileClick.bind(this);
+		this.handleOrthogonalClick = this.handleOrthogonalClick.bind(this);
+		this.handleOctolinearClick = this.handleOctolinearClick.bind(this);
+		this.handleDiagonalClick = this.handleDiagonalClick.bind(this);
 		this.currentAlgorithmElement = document.getElementById("current-algorithm");
 		this.setupEventListeners();
 	}
@@ -39,7 +44,7 @@ export default class Toolbar {
 			.addEventListener("click", this.handleDijkstraClick);
 		document
 			.getElementById("greedy")
-			.addEventListener("click", this.handleGreedyBestFirstClick);
+			.addEventListener("click", this.handleBestFirstClick);
 		document
 			.getElementById("clear-walls")
 			.addEventListener("click", this.handleClearWalls);
@@ -56,6 +61,66 @@ export default class Toolbar {
 		document
 			.getElementById("canvas-label")
 			.addEventListener("click", this.handleCanvasClick);
+		document
+			.getElementById("chebyshev-label")
+			.addEventListener("click", this.handleChebyshevClick);
+		document
+			.getElementById("manhattan-label")
+			.addEventListener("click", this.handleManhattanClick);
+		document
+			.getElementById("octile-label")
+			.addEventListener("click", this.handleOctileClick);
+		document
+			.getElementById("euclidian-label")
+			.addEventListener("click", this.handleEuclidianClick);
+
+		document
+			.getElementById("octolinear-label")
+			.addEventListener("click", this.handleOctolinearClick);
+
+		document
+			.getElementById("orthogonal-label")
+			.addEventListener("click", this.handleOrthogonalClick);
+
+		document
+			.getElementById("diagonal-label")
+			.addEventListener("click", this.handleDiagonalClick);
+	}
+	handleOctolinearClick() {
+		this.settings.mode = 1;
+		this.settings.heuristic = "OCTILE";
+		document.getElementById("octile").checked = true;
+		document.getElementById("manhattan").checked = false;
+		document.getElementById("chebyshev").checked = false;
+		document.getElementById("euclidian").checked = false;
+	}
+	handleOrthogonalClick() {
+		this.settings.mode = 0;
+		this.settings.heuristic = "MANHATTAN";
+		document.getElementById("manhattan").checked = true;
+		document.getElementById("octile").checked = false;
+		document.getElementById("chebyshev").checked = false;
+		document.getElementById("euclidian").checked = false;
+	}
+	handleDiagonalClick() {
+		this.settings.mode = 2;
+		this.settings.heuristic = "MANHATTAN";
+		document.getElementById("manhattan").checked = true;
+		document.getElementById("octile").checked = false;
+		document.getElementById("chebyshev").checked = false;
+		document.getElementById("euclidian").checked = false;
+	}
+	handleManhattanClick() {
+		this.settings.heuristic = "MANHATTAN";
+	}
+	handleEuclidianClick() {
+		this.settings.heuristic = "EUCLIDEAN";
+	}
+	handleOctileClick() {
+		this.settings.heuristic = "OCTILE";
+	}
+	handleChebyshevClick() {
+		this.settings.heuristic = "CHEBYSHEV";
 	}
 	handleSVGClick() {
 		if (this.board.params.type === Two.Types.svg) return;
@@ -76,14 +141,6 @@ export default class Toolbar {
 		this.board.setupFG();
 	}
 	handleSearchClick() {
-		const radioParent = document.getElementsByClassName("mode-radios")[0];
-		for (let i = 0; i < radioParent.children.length; i++) {
-			const radio = radioParent.children[i].children[0];
-			if (radio.checked) {
-				this.settings.mode = parseInt(radio.value);
-				break;
-			}
-		}
 		switch (this.settings.algorithm) {
 			case "A_STAR":
 				const aStar = new AStar(this.board, this.settings);
@@ -112,7 +169,9 @@ export default class Toolbar {
 			"stats"
 		).children[0].innerText = `Runtime: ${runtime.toFixed(2)}ms`;
 		document.getElementById("stats").children[1].innerText = `Steps: ${steps}`;
-		document.getElementById("stats").children[2].innerText = `Path Length: ${pathLength}`;
+		document.getElementById(
+			"stats"
+		).children[2].innerText = `Path Length: ${pathLength}`;
 	}
 	handleAStarClick() {
 		this.currentAlgorithmElement.innerText = "A*";
@@ -125,7 +184,7 @@ export default class Toolbar {
 		this.currentAlgorithmElement.innerText = "Breadth First Search";
 		this.settings.algorithm = "GOOD_BFS";
 	}
-	handleGreedyBestFirstClick() {
+	handleBestFirstClick() {
 		this.currentAlgorithmElement.innerText = "Greedy Best-First Search";
 		this.settings.algorithm = "GREEDY";
 	}

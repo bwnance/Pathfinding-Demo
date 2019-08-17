@@ -40,7 +40,7 @@
 								type="radio"
 								checked
 							/>
-							<label for="octolinear">Octilinear</label>
+							<label id="octolinear-label" for="octolinear">Octilinear</label>
 						</li>
 						<li>
 							<input
@@ -49,11 +49,11 @@
 								id="orthogonal"
 								type="radio"
 							/>
-							<label for="orthogonal">Orthogonal</label>
+							<label  id="orthogonal-label" for="orthogonal">Orthogonal</label>
 						</li>
 						<li>
 							<input name="mode" value="2" id="diagonal" type="radio" />
-							<label for="diagonal">Diagonal</label>
+							<label  id="diagonal-label" for="diagonal">Diagonal</label>
 						</li>
 					</ul>
 				</div>
@@ -74,6 +74,34 @@
 							<input name="render-mode" value="2" id="canvas" type="radio" />
 							<label id="canvas-label" for="canvas">Canvas</label>
 						</li>
+					</ul>
+				</div>
+				<div class="info-subsection">
+					<h2>
+						Heuristic
+					</h2>
+					<ul class="heuristic-radios">
+						<div>
+                            <li>
+                                <input name="heuristic" value="0" id="octile" type="radio" checked/>
+                                <label id="octile-label" for="octile">Octile</label>
+                            </li>
+                           
+                            <li>
+                                <input name="heuristic" value="1" id="chebyshev" type="radio"  />
+                                <label id="chebyshev-label" for="chebyshev">Chebyshev</label>
+                            </li>
+                        </div>
+                        <div>
+                             <li>
+                                <input name="heuristic" value="1" id="manhattan" type="radio"  />
+                                <label id="manhattan-label" for="manhattan">Manhattan</label>
+                            </li>
+                            <li>
+                                <input name="heuristic" value="2" id="euclidian" type="radio" />
+                                <label id="euclidian-label" for="euclidian">Euclidian</label>
+                            </li>
+                        </div>
 					</ul>
 				</div>
 			</section>
