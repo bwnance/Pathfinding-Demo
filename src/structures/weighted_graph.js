@@ -1,6 +1,6 @@
 export default class WeightedGraph {
 	constructor(board, settings) {
-        this.settings = settings
+		this.settings = settings;
 		this.nodes = {};
 		this.aMatrix = [];
 		this.board = board;
@@ -12,7 +12,7 @@ export default class WeightedGraph {
 		grid.forEach((row, y) => {
 			row.forEach((el, x) => {
 				const node = new WeightedGraphNode(el.objectType, [x, y]);
-				node.endDist = this.getEndCost(x,y);
+				node.endDist = this.getEndCost(x, y);
 				this.nodes[`${x},${y}`] = node;
 				if (el.objectType === 2) this.startNode = node;
 				else if (el.objectType === 3) this.endNode = node;
@@ -23,7 +23,7 @@ export default class WeightedGraph {
 		});
 	}
 	getEndCost(x, y) {
-		return this.heuristic([x,y], this.board.targetCoords) * (1.0+0.001)
+		return this.heuristic([x, y], this.board.targetCoords) * (1.0 + 0.001);
 	}
 	neighbors(node) {
 		const neighbors = [];
@@ -54,27 +54,30 @@ export default class WeightedGraph {
 			const neighbor = this.nodes[`${newDir.x},${newDir.y}`];
 			if (neighbor.objectType === 1) return;
 			if ((dir[0] === -1 && dir[1] === -1) || (dir[0] === 1 && dir[1] === 1)) {
-				moveCost = Math.SQRT2;
-				const testDir1 = { x: newDir.x - dir[1], y: newDir.y };
-				const testDir2 = { x: newDir.x, y: newDir.y - dir[1] };
-				const testNode1 = this.nodes[`${testDir1.x},${testDir1.y}`];
-				const testNode2 = this.nodes[`${testDir2.x},${testDir2.y}`];
-				if (testNode1.objectType === 1 || testNode2.objectType === 1) return;
+				if (this.settings.mode !== 2) {
+					moveCost = Math.SQRT2;
+					const testDir1 = { x: newDir.x - dir[1], y: newDir.y };
+					const testDir2 = { x: newDir.x, y: newDir.y - dir[1] };
+					const testNode1 = this.nodes[`${testDir1.x},${testDir1.y}`];
+					const testNode2 = this.nodes[`${testDir2.x},${testDir2.y}`];
+					if (testNode1.objectType === 1 || testNode2.objectType === 1) return;
+				}
 			} else if (
 				(dir[0] === -1 && dir[1] === 1) ||
 				(dir[0] === 1 && dir[1] === -1)
 			) {
-				moveCost = Math.SQRT2;
-				const testDir1 = { x: newDir.x + dir[1], y: newDir.y };
-				const testDir2 = { x: newDir.x, y: newDir.y + dir[0] };
-				const testNode1 = this.nodes[`${testDir1.x},${testDir1.y}`];
-				const testNode2 = this.nodes[`${testDir2.x},${testDir2.y}`];
-				if (testNode1.objectType === 1 || testNode2.objectType === 1) return;
+				if (this.settings.mode !== 2) {
+					moveCost = Math.SQRT2;
+					const testDir1 = { x: newDir.x + dir[1], y: newDir.y };
+					const testDir2 = { x: newDir.x, y: newDir.y + dir[0] };
+					const testNode1 = this.nodes[`${testDir1.x},${testDir1.y}`];
+					const testNode2 = this.nodes[`${testDir2.x},${testDir2.y}`];
+					if (testNode1.objectType === 1 || testNode2.objectType === 1) return;
+				}
 			}
-			neighbors.push({neighbor, moveCost});
-			
+			neighbors.push({ neighbor, moveCost });
 		});
-		return neighbors
+		return neighbors;
 		// .sort((el1, el2) => {
 		// 	const totalCost1 = el1.endDist;
 		// 	const totalCost2 = el2.endDist;

@@ -186,6 +186,7 @@ export default class Board {
 		this.twoFg.update();
 	}
 	setupGrid() {
+		this.saved = {};
 		const numLinesY = this.params.height / this.boxSize;
 		const numLinesX = this.params.width / this.boxSize;
 		for (let y = 1; y <= numLinesY; y++) {
@@ -231,7 +232,7 @@ export default class Board {
 			} else if (savedBox.objectType === 5) {
 				this.colorNeighbor(px, py);
 			}
-			delete this.saved[JSON.stringify(this.targetCoords)];
+			// delete this.saved[JSON.stringify(this.targetCoords)];
 		} else {
 			this.deleteBox(...this.targetCoords);
 		}
@@ -245,7 +246,7 @@ export default class Board {
 			} else if (savedBox.objectType === 5) {
 				this.colorNeighbor(px, py);
 			}
-			delete this.saved[JSON.stringify(this.startCoords)];
+			// delete this.saved[JSON.stringify(this.startCoords)];
 		} else {
 			this.deleteBox(...this.startCoords);
 		}
@@ -262,7 +263,13 @@ export default class Board {
 		this.el.addEventListener("mousemove", this.handleMouseMove.bind(this));
 		this.el.addEventListener("mousedown", this.handleMouseDown.bind(this));
 		this.el.addEventListener("mouseup", this.handleMouseUp.bind(this));
-		// this.el.addEventListener("mouseleave",)
+		this.el.addEventListener("mouseleave", this.handleMouseLeave.bind(this));
+	}
+	handleMouseLeave(e){
+		this.carryingStart = false;
+		this.building = false;
+		this.carryingEnd = false;
+		this.deleting = false;
 	}
 	handleMouseUp(e) {
 		const x = Math.floor(e.layerX / this.boxSize) + 1;

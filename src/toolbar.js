@@ -34,16 +34,16 @@ export default class Toolbar {
 			.getElementById("search")
 			.addEventListener("click", () => setTimeout(this.handleSearchClick, 0));
 		document
-			.getElementById("a*")
+			.getElementById("a*-label")
 			.addEventListener("click", this.handleAStarClick);
 		document
-			.getElementById("good-bfs")
+			.getElementById("bfs-label")
 			.addEventListener("click", this.handleGoodBFSClick);
 		document
-			.getElementById("dijkstra")
+			.getElementById("dijkstra-label")
 			.addEventListener("click", this.handleDijkstraClick);
 		document
-			.getElementById("greedy")
+			.getElementById("greedy-label")
 			.addEventListener("click", this.handleBestFirstClick);
 		document
 			.getElementById("clear-walls")
