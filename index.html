@@ -6,7 +6,14 @@
 	</head>
 	<body>
 		<container id="demo-container">
-			<section id="render-section"></section>
+			<section id="render-section">
+				<div id="background">
+				</div>
+				<ul id="squares">
+					
+				</ul>
+				<div id="foreground"></div>
+			</section>
 			<section id="info-section">
 				<div class="info-subsection algorithms-container">
 					<h1 id="current-algorithm">A*</h1>
@@ -18,7 +25,7 @@
 									value="1"
 									id="bfs"
 									type="radio"
-									checked
+									
 								/>
 								<label id="bfs-label" for="bfs">BFS Algorithm</label>
                             </li>
@@ -32,7 +39,7 @@
 								<label id="greedy-label" for="greedy">Greedy Best First Algorithm</label>
 							</li>
 							<li>
-								<input name="algorithm" value="2" id="a*" type="radio" />
+								<input name="algorithm" value="2" id="a*" type="radio" checked/>
 								<label id="a*-label" for="a*">A* Algorithm</label>
 							</li>
 						</ul>
@@ -78,7 +85,7 @@
 						</li>
 					</ul>
 				</div>
-				<div class="info-subsection">
+				<!-- <div class="info-subsection">
 					<h2>
 						Render Mode
 					</h2>
@@ -102,7 +109,7 @@
 							<label id="canvas-label" for="canvas">Canvas</label>
 						</li>
 					</ul>
-				</div>
+				</div> -->
 				<div class="info-subsection">
 					<h2>
 						Heuristic

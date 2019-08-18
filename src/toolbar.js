@@ -52,15 +52,15 @@ export default class Toolbar {
 			.getElementById("clear-path")
 			.addEventListener("click", this.handleClearPath);
 
-		document
-			.getElementById("svg-label")
-			.addEventListener("click", this.handleSVGClick);
-		document
-			.getElementById("webgl-label")
-			.addEventListener("click", this.handleWebGLClick);
-		document
-			.getElementById("canvas-label")
-			.addEventListener("click", this.handleCanvasClick);
+		// document
+		// 	.getElementById("svg-label")
+		// 	.addEventListener("click", this.handleSVGClick);
+		// document
+		// 	.getElementById("webgl-label")
+		// 	.addEventListener("click", this.handleWebGLClick);
+		// document
+		// 	.getElementById("canvas-label")
+		// 	.addEventListener("click", this.handleCanvasClick);
 		document
 			.getElementById("chebyshev-label")
 			.addEventListener("click", this.handleChebyshevClick);
