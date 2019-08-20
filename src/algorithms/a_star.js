@@ -69,7 +69,7 @@ export default class AStar {
 		current.neighbors.forEach(neighbor => {
 			const newCost = this.costSoFar[current.posKey] + 1; //movement cost is always 1
 			if (
-				!Object.keys(this.costSoFar).includes(neighbor.posKey) ||
+				!(neighbor.posKey in this.costSoFar) ||
 				newCost < this.costSoFar[neighbor.posKey]
 			) {
 				this.costSoFar[neighbor.posKey] = newCost;
@@ -100,9 +100,9 @@ export default class AStar {
 			this.board.colorFrontier(current.x, current.y);
 			current.neighbors.forEach(neighborNode => {
 				const { neighbor, moveCost } = neighborNode;
-				const newCost = this.costSoFar[current.posKey] + moveCost; //movement cost is always 1
+				const newCost = this.costSoFar[current.posKey] + moveCost; //movement cost 1 for orthoganals, 2 for diagonals
 				if (
-					!Object.keys(this.costSoFar).includes(neighbor.posKey) ||
+					!(neighbor.posKey in this.costSoFar) ||
 					newCost < this.costSoFar[neighbor.posKey]
 				) {
 					this.costSoFar[neighbor.posKey] = newCost;

@@ -57,6 +57,7 @@ export default class Board {
 		this.twoFg.update();
 	}
 	colorFrontier(x, y) {
+		// this.drawQueue.enqueue(this.currentSearchSection)
 		setTimeout(() => this.colorBox(x, y, "#E9D6EC", 4), 10);
 	}
 	colorNeighbor(x, y) {

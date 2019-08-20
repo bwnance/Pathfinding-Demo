@@ -1,4 +1,3 @@
-import BadBFS from "./algorithms/bad_bfs";
 import GoodBFS from "./algorithms/good_bfs";
 import Dijkstra from "./algorithms/dijkstra";
 import GreedyBestFirst from "./algorithms/greedy_best_first";
@@ -12,7 +11,6 @@ export default class Toolbar {
 		this.handleAStarClick = this.handleAStarClick.bind(this);
 		this.handleClearWalls = this.handleClearWalls.bind(this);
 		this.handleClearPath = this.handleClearPath.bind(this);
-		this.handleBadBFSClick = this.handleBadBFSClick.bind(this);
 		this.handleGoodBFSClick = this.handleGoodBFSClick.bind(this);
 		this.handleDijkstraClick = this.handleDijkstraClick.bind(this);
 		this.handleBestFirstClick = this.handleBestFirstClick.bind(this);
@@ -176,9 +174,6 @@ export default class Toolbar {
 	handleAStarClick() {
 		this.currentAlgorithmElement.innerText = "A*";
 		this.settings.algorithm = "A_STAR";
-	}
-	handleBadBFSClick() {
-		this.settings.algorithm = "BAD_BFS";
 	}
 	handleGoodBFSClick() {
 		this.currentAlgorithmElement.innerText = "Breadth First Search";

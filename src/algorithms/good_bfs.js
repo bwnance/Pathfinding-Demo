@@ -28,7 +28,7 @@ export default class GoodBFS {
 		}
 		this.board.colorFrontier(current.x, current.y);
 		current.neighbors.forEach(neighbor => {
-			if (!Object.keys(this.cameFrom).includes(neighbor.posKey)) {
+			if (!(neighbor.posKey in this.cameFrom)) {
 				this.frontier.enqueue(neighbor);
 				this.cameFrom[neighbor.posKey] = current;
 				this.board.colorNeighbor(neighbor.x, neighbor.y);
@@ -86,7 +86,7 @@ export default class GoodBFS {
 			if (current.posKey === this.graph.endNode.posKey) break;
 			this.board.colorFrontier(current.x, current.y);
 			current.neighbors.forEach(neighbor => {
-				if (!Object.keys(this.cameFrom).includes(neighbor.posKey)) {
+				if (!(neighbor.posKey in this.cameFrom)) {
 					this.frontier.enqueue(neighbor);
 					this.cameFrom[neighbor.posKey] = current;
 					this.board.colorNeighbor(neighbor.x, neighbor.y);

@@ -28,7 +28,7 @@ export default class GreedyBestFirst {
 		}
 		this.board.colorFrontier(current.x, current.y);
 		current.neighbors.forEach(neighbor => {
-			if (!Object.keys(this.cameFrom).includes(neighbor.posKey)) {
+			if (!(neighbor.posKey in this.cameFrom)) {
 				const priority = neighbor.endDist;
 				this.frontier.enqueue(neighbor, priority);
 				this.cameFrom[neighbor.posKey] = current;
@@ -91,8 +91,7 @@ export default class GreedyBestFirst {
 			this.board.colorFrontier(current.x, current.y);
 			current.neighbors.forEach(neighborNode => {
 				const { neighbor, moveCost } = neighborNode;
-
-				if (!Object.keys(this.cameFrom).includes(neighbor.posKey)) {
+				if (!(neighbor.posKey in this.cameFrom)) {
 					const priority = neighbor.endDist;
 					this.frontier.enqueue(neighbor, priority);
 					this.cameFrom[neighbor.posKey] = current;

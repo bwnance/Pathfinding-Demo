@@ -67,7 +67,7 @@ export default class Dijkstra {
 		current.neighbors.forEach(neighbor => {
 			const newCost = this.costSoFar[current.posKey] + 1; //movement cost is always 1
 			if (
-				!Object.keys(this.costSoFar).includes(neighbor.posKey) ||
+				!(neighbor.posKey in this.costSoFar) ||
 				newCost < this.costSoFar[neighbor.posKey]
 			) {
 				this.costSoFar[neighbor.posKey] = newCost;
@@ -100,7 +100,7 @@ export default class Dijkstra {
 				const { neighbor, moveCost } = neighborNode;
 				const newCost = this.costSoFar[current.posKey] + moveCost; //movement cost is always 1
 				if (
-					!Object.keys(this.costSoFar).includes(neighbor.posKey) ||
+					!(neighbor.posKey in this.costSoFar) ||
 					newCost < this.costSoFar[neighbor.posKey]
 				) {
 					this.costSoFar[neighbor.posKey] = newCost;
