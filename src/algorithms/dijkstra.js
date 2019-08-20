@@ -6,7 +6,7 @@ export default class Dijkstra {
 		this.graph;
 		this.settings = settings;
 		this.grid = [];
-		this.came_from;
+		this.cameFrom;
 		this.cost_so_far;
 		this.frontier = new PriorityQueue();
 		this.start = this.start.bind(this);
@@ -21,10 +21,11 @@ export default class Dijkstra {
 	drawPath() {
 		let current = this.graph.endNode;
 		if (!current) return;
+
 		const path = [];
 		while (current.posKey !== this.graph.startNode.posKey) {
 			path.push(current);
-			current = this.came_from[current.posKey];
+			current = this.cameFrom[current.posKey];
 			if (!current) {
 				path.shift();
 				return;
@@ -33,15 +34,7 @@ export default class Dijkstra {
 		path.push(this.graph.startNode);
 		const reversed = path.reverse();
 		this.pathLength = path.length;
-		let prev = path.shift();
-		reversed.forEach(el => {
-			// setTimeout(() => this.board.colorBox(el.x, el.y, "black", 4));
-			const prevCoords = [prev.x, prev.y];
-			setTimeout(() =>
-				this.board.createLine(prevCoords, [el.x, el.y], "black", 4)
-			);
-			prev = el;
-		});
+		this.board.path = reversed;
 	}
 	startRecursive() {
 		this.initializeGraph();
@@ -49,9 +42,9 @@ export default class Dijkstra {
 		this.frontier = new PriorityQueue();
 		this.frontier.enqueue(this.graph.startNode, 0);
 		this.costSoFar = {};
-		this.came_from = {};
+		this.cameFrom = {};
 		this.costSoFar[this.graph.startNode.posKey] = 0;
-		this.came_from[this.graph.startNode.posKey] = null;
+		this.cameFrom[this.graph.startNode.posKey] = null;
 		setTimeout(this.recursiveStep);
 	}
 	recursiveStep() {
@@ -73,7 +66,7 @@ export default class Dijkstra {
 				this.costSoFar[neighbor.posKey] = newCost;
 				const priority = newCost;
 				this.frontier.enqueue(neighbor, priority);
-				this.came_from[neighbor.posKey] = current;
+				this.cameFrom[neighbor.posKey] = current;
 
 				this.board.colorNeighbor(neighbor.x, neighbor.y);
 			}
@@ -88,14 +81,14 @@ export default class Dijkstra {
 		this.frontier = new PriorityQueue();
 		this.frontier.enqueue(this.graph.startNode, 0);
 		this.costSoFar = {};
-		this.came_from = {};
+		this.cameFrom = {};
 		this.costSoFar[this.graph.startNode.posKey] = 0;
-		this.came_from[this.graph.startNode.posKey] = null;
+		this.cameFrom[this.graph.startNode.posKey] = null;
 		while (!this.frontier.isEmpty()) {
 			this.steps += 1;
 			const current = this.frontier.dequeue();
 			if (current.posKey === this.graph.endNode.posKey) break;
-			this.board.colorFrontier(current.x, current.y);
+			this.board.addFrontierToQueue(current.x, current.y);
 			current.neighbors.forEach(neighborNode => {
 				const { neighbor, moveCost } = neighborNode;
 				const newCost = this.costSoFar[current.posKey] + moveCost; //movement cost is always 1
@@ -106,13 +99,15 @@ export default class Dijkstra {
 					this.costSoFar[neighbor.posKey] = newCost;
 					const priority = newCost;
 					this.frontier.enqueue(neighbor, priority);
-					this.came_from[neighbor.posKey] = current;
-					this.board.colorNeighbor(neighbor.x, neighbor.y);
+					this.cameFrom[neighbor.posKey] = current;
+					this.board.addNeighborToQueue(neighbor.x, neighbor.y);
 				}
 			});
 		}
 		const endTime = performance.now();
 		this.runtime = endTime - startTime;
+		this.board.draw();
+
 		this.drawPath();
 	}
 }

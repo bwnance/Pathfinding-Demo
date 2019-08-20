@@ -43,6 +43,7 @@ export default class GreedyBestFirst {
 	}
 	drawPath() {
 		let current = this.graph.endNode;
+		if (!current) return;
 
 		const path = [];
 		while (current.posKey !== this.graph.startNode.posKey) {
@@ -56,15 +57,7 @@ export default class GreedyBestFirst {
 		path.push(this.graph.startNode);
 		const reversed = path.reverse();
 		this.pathLength = path.length;
-		let prev = path.shift();
-		reversed.forEach(el => {
-			// setTimeout(() => this.board.colorBox(el.x, el.y, "black", 4));
-			const prevCoords = [prev.x, prev.y];
-			setTimeout(() =>
-				this.board.createLine(prevCoords, [el.x, el.y], "black", 4)
-			);
-			prev = el;
-		});
+		this.board.path = reversed;
 	}
 	startRecursive() {
 		this.initializeGraph();
@@ -88,19 +81,21 @@ export default class GreedyBestFirst {
 			this.steps += 1;
 			const current = this.frontier.dequeue();
 			if (current.posKey === this.graph.endNode.posKey) break;
-			this.board.colorFrontier(current.x, current.y);
+			this.board.addFrontierToQueue(current.x, current.y);
 			current.neighbors.forEach(neighborNode => {
 				const { neighbor, moveCost } = neighborNode;
 				if (!(neighbor.posKey in this.cameFrom)) {
 					const priority = neighbor.endDist;
 					this.frontier.enqueue(neighbor, priority);
 					this.cameFrom[neighbor.posKey] = current;
-					this.board.colorNeighbor(neighbor.x, neighbor.y);
+					this.board.addNeighborToQueue(neighbor.x, neighbor.y);
 				}
 			});
 		}
 		const endTime = performance.now();
 		this.runtime = endTime - startTime;
+		this.board.draw();
+
 		this.drawPath();
 	}
 }

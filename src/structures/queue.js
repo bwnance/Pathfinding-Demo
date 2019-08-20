@@ -5,8 +5,9 @@ export default class Queue{
     enqueue(item){
         this.queue.unshift(item);
     }
-    dequeue(item){
-        return this.queue.pop(item);
+    dequeue(){
+        // debugger
+        return this.queue.pop();
     }
     peek(item){
         return this.queue[this.queue.length-1]

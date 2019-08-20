@@ -1,3 +1,4 @@
+import Queue from "./structures/queue";
 import Two from "two.js";
 export default class Board {
 	constructor() {
@@ -21,6 +22,9 @@ export default class Board {
 		this.texts = [];
 		this.saved = {};
 		this.backgroundColor = "#353535";
+		this.drawQueue = new Queue();
+		this.currentDrawSection = {};
+		this._draw = this._draw.bind(this);
 	}
 	setup() {
 		this.setupCanvases();
@@ -56,12 +60,57 @@ export default class Board {
 		this.lines.push(line);
 		this.twoFg.update();
 	}
-	colorFrontier(x, y) {
-		// this.drawQueue.enqueue(this.currentSearchSection)
-		setTimeout(() => this.colorBox(x, y, "#E9D6EC", 4), 10);
+	sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
 	}
-	colorNeighbor(x, y) {
-		setTimeout(() => this.colorBox(x, y, "#79C6AD", 5), 10);
+	drawPath(){
+		let prev = this.path.shift();
+		this.path.forEach(el => {
+			// setTimeout(() => this.board.colorBox(el.x, el.y, "black", 4));
+			const prevCoords = [prev.x, prev.y];
+			setTimeout(() =>
+				this.createLine(prevCoords, [el.x, el.y], "black", 4)
+			);
+			prev = el;
+		});
+	}
+	draw() {
+		this.drawQueue.enqueue(Object.assign({}, this.currentDrawSection));
+		
+		setTimeout(this._draw);
+	}
+	_draw() {
+		let section = this.drawQueue.dequeue();
+		if (section === undefined) {
+			this.currentDrawSection = {};
+			this.drawPath();
+			return;
+		}
+		this.colorFrontier(...section.frontier);
+		section.neighbors.forEach(neighbor => {
+			this.colorNeighbor(...neighbor);
+		});
+		// section = this.drawQueue.dequeue();
+		this.sleep(3).then(this._draw);
+	}
+	addFrontierToQueue(x, y) {
+		if (Object.keys(this.currentDrawSection).length !== 0)
+			this.drawQueue.enqueue(Object.assign({}, this.currentDrawSection));
+		this.currentDrawSection = {
+			frontier: [x, y],
+			neighbors: []
+		};
+		// setTimeout(() => this.colorBox(x, y, "#E9D6EC", 4), 10);
+	}
+	addNeighborToQueue(x, y) {
+		this.currentDrawSection.neighbors.push([x, y]);
+		// setTimeout(() => this.colorBox(x, y, "#79C6AD", 5), 10);
+	}
+	colorFrontier(x, y, timeout = 0) {
+		setTimeout(() => this.colorBox(x, y, "#E9D6EC", 4), timeout);
+	}
+	colorNeighbor(x, y, timeout = 0) {
+		setTimeout(() => this.colorBox(x, y, "#79C6AD", 5), timeout);
 	}
 	colorBox(x, y, color, objectType = 1, override = false) {
 		const stringCoords = JSON.stringify([x, y]);
@@ -200,16 +249,16 @@ export default class Board {
 		const numLinesX = this.params.width / this.boxSize;
 		for (let y = 1; y <= numLinesY; y++) {
 			this.grid[y] = [];
-			const div = document.createElement('div');
-			div.className = `row-${y}`
+			const div = document.createElement("div");
+			div.className = `row-${y}`;
 			this.squaresUl.appendChild(div);
 			for (let x = 1; x <= numLinesX; x++) {
 				this.createBox(this.twoBg, x, y, this.backgroundColor);
 			}
 		}
 	}
-	removeAllSquares(){
-		while(this.squaresUl.firstChild){
+	removeAllSquares() {
+		while (this.squaresUl.firstChild) {
 			this.squaresUl.removeChild(this.squaresUl.firstChild);
 		}
 	}

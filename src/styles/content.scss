@@ -27,11 +27,14 @@ body {
 	padding-bottom: 20px;
 	right: 50%;
 	// height: 50px;
-	width: 60px;
+	width: 100px;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: space-around;
+	z-index: 5;
 	svg {
+		height: 30px;
+		width: 30px;
 		padding: 5px;
 		// margin-left: 5px;
 		stroke: rgba(255, 255, 255, 0.8);
