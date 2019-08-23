@@ -163,13 +163,11 @@ export default class Toolbar {
 		}
 	}
 	setStats(runtime, steps, pathLength) {
-		document.getElementById(
-			"stats"
-		).children[0].innerText = `Runtime: ${runtime.toFixed(2)}ms`;
-		document.getElementById("stats").children[1].innerText = `Steps: ${steps}`;
-		document.getElementById(
-			"stats"
-		).children[2].innerText = `Path Length: ${pathLength}`;
+		const stats = document.getElementById('stats')
+		stats.className = '';
+		stats.children[0].innerText = `Runtime: ${runtime.toFixed(2)}ms`;
+		stats.children[1].innerText = `Steps: ${steps}`;
+		stats.children[2].innerText = `Path Length: ${pathLength}`;
 	}
 	handleAStarClick() {
 		this.currentAlgorithmElement.innerText = "A*";
@@ -188,9 +186,13 @@ export default class Toolbar {
 		this.settings.algorithm = "DIJKSTRA";
 	}
 	handleClearWalls() {
+		const stats = document.getElementById("stats");
+		stats.className = "hidden";
 		this.board.clearWalls();
 	}
 	handleClearPath() {
+		const stats = document.getElementById("stats");
+		stats.className = "hidden";
 		this.board.clearPath(false);
 	}
 }

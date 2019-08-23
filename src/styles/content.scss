@@ -11,6 +11,9 @@ body {
 	user-select: none;
 	font-family: roboto, sans-serif;
 }
+.hidden{
+	display: none !important;
+}
 #demo-container {
 	background-color: rgba(0, 0, 0, 0.05);
 
@@ -22,9 +25,11 @@ body {
 	justify-content: center;
 }
 #personal-links {
+	background-color: rgba(0, 0, 0, 0.7);
 	position: absolute;
 	bottom: 0px;
-	padding-bottom: 20px;
+	margin-bottom: 20px;
+	border-radius: 8px;
 	right: 50%;
 	// height: 50px;
 	width: 100px;
@@ -45,7 +50,7 @@ body {
 	// border-radius: 8px;
 	overflow: hidden;
 	box-sizing: border-box;
-	width: 101% !important;
+	width: 100% !important;
 	height: 100% !important;
 	position: relative;
 	top: 0px;
@@ -102,17 +107,22 @@ body {
 #stats {
 	z-index: 3;
 	width: 150px;
-	height: 50px;
-	color: rgba(255, 255, 255, 0.8);
+	padding: 10px;
+	// height: 50px;
+	background-color: rgba(0, 0, 0, 0.7);
+	border: 2px solid black;
+	font-size: 18px;
+	color: rgba(255,255,255,0.7);
 	display: flex;
 	flex-direction: column;
 	position: absolute;
 	bottom: 0px;
 	left: 0px;
-	padding-left: 20px;
-	padding-bottom: 30px;
+	margin-left: 20px;
+	border-radius: 8px;
+	margin-bottom: 30px;
 	font-weight: bold;
-	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	// text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 	div {
 		margin-bottom: 5px;
 	}

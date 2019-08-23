@@ -6,6 +6,7 @@ export default class Board {
 		this.twoFg;
 		this.twoBg;
 		this.boxSize = 30;
+		this.rootEl = document.getElementById("demo-container");
 		this.parentEl = document.getElementById("render-section");
 		this.bgEl = document.getElementById("background");
 		this.squaresUl = document.getElementById("squares");
@@ -327,7 +328,7 @@ export default class Board {
 		this.targetCoords = [x, y];
 	}
 	addListeners() {
-		this.parentEl.addEventListener(
+		this.rootEl.addEventListener(
 			"mousemove",
 			this.handleMouseMove.bind(this)
 		);
@@ -335,17 +336,17 @@ export default class Board {
 			"mousedown",
 			this.handleMouseDown.bind(this)
 		);
-		this.parentEl.addEventListener("mouseup", this.handleMouseUp.bind(this));
+		this.rootEl.addEventListener("mouseup", this.handleMouseUp.bind(this));
 		this.parentEl.addEventListener(
 			"mouseleave",
 			this.handleMouseLeave.bind(this)
 		);
 	}
 	handleMouseLeave(e) {
-		this.carryingStart = false;
-		this.building = false;
-		this.carryingEnd = false;
-		this.deleting = false;
+		// this.carryingStart = false;
+		// this.building = false;
+		// this.carryingEnd = false;
+		// this.deleting = false;
 	}
 	handleMouseUp(e) {
 		const x = Math.floor(e.layerX / this.boxSize) + 1;
@@ -403,8 +404,9 @@ export default class Board {
 		}
 	}
 	handleMouseMove(e) {
-		const x = Math.floor(e.layerX / this.boxSize) + 1;
-		const y = Math.floor(e.layerY / this.boxSize) + 1;
+		// debugger
+		const x = Math.floor(e.pageX / this.boxSize) + 1;
+		const y = Math.floor(e.pageY / this.boxSize) + 1;
 		if (!this.grid[y] || !this.grid[y][x]) return;
 		if (JSON.stringify(this.lastCoords) === JSON.stringify([x, y])) return;
 		const currentBox = this.grid[y][x];
