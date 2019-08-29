@@ -183,6 +183,7 @@ export default class Board {
 			this.twoFg.remove(line);
 		});
 		this.lines = [];
+		this.path = [];
 		this.grid.forEach((row, y) => {
 			row.forEach((el, x) => {
 				if (el.objectType === 1) return;
