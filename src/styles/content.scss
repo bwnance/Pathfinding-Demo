@@ -136,7 +136,7 @@ body {
 
 	li {
 		width: 75%;
-		// height: 37px;
+		// height: 10px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -156,34 +156,49 @@ body {
 	}
 }
 #info-section {
+	background-color: rgba(255,255,255, 0.2);
+	
 	color: rgba(255,255,255,0.7);
 	// border-left: 0px;
 	// box-sizing: border-box;
-	width: 250px;
+	border-radius: 8px;
+	width: 300px;
 	// margin-left: 50px;
-	height: 80%;
+	height: 92%;
+	margin-bottom: 2.5%;
+	margin-top: 2.5%;
 	position: absolute;
-	right: 50px;
-	top: 10vh;
+	right: 25px;
+	top: 0vh;
 	position: fixed;
+	// padding-bottom: 10px;
 	z-index: 3;
-	display: flex;
+	// display: flex;
 	flex-direction: column;
 	justify-content: space-evenly;
 	align-items: center;
+	border: 2px solid black;
+	overflow-y: overlay;
+	overflow-x: hidden;
 	.algorithms-container {
 		width: 250px;
 	}
 	.info-subsection {
+		width: calc(100% - 75px);
+		position: relative;
+		left: 8%;
+		top: 2%;
 		padding: 10px;
 		border-radius: 8px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		margin-top: 5px;
+		background-color: rgba(30,30,30,0.9);
 		border: 2px solid black;
-		background-color: rgba(0, 0, 0, 0.4);
-		margin-top: 10px;
+		margin-bottom: 20px;
+		// height: 500px;
 	}
 	h1 {
 		
@@ -209,7 +224,7 @@ body {
 		}
 		li {
 			width: 75%;
-			height: 37px;
+			// height: 10%;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
@@ -222,6 +237,7 @@ body {
 				justify-content: center;
 				text-align: center;
 				width: 100%;
+				
 			}
 		}
 	}
@@ -241,14 +257,17 @@ body {
 		input {
 			visibility: hidden;
 		}
+		label:hover{
+			background-color: rgba(0, 0, 0, 1);
+		}
 		label {
 			cursor: pointer;
-			background-color: rgba(0,0,0,0.15);
-			border: 1px solid rgba(255, 255, 255, 0.2);
+			background-color: rgba(0,0,0,0.5);
 			padding: 10px;
 			border-radius: 8px;
 			margin-left: 3px;
 			margin-right: 3px;
+			// height: 5%;
 		}
 		input:checked + label {
 			background-color: rgba(255,255,255, 0.2);
@@ -267,14 +286,14 @@ body {
 	}
 	button {
 		&:hover {
-			background-color: rgba(0, 0, 0, 0.7);
+			background-color: rgba(0, 0, 0, 1);
 			cursor: pointer;
 		}
 		font-size: 16px;
 		background: none;
 		box-shadow: none;
 		border: 1px solid rgba(255, 255, 255, 0.2);
-		background-color: rgba(0,0,0,0.15);
+		background-color: rgba(0,0,0,0.5);
 		margin-top: 5px;
 		margin-bottom: 5px;
 		padding: 10px;
