@@ -120,7 +120,7 @@ export default class Board {
 		setTimeout(() => this.colorBox(x, y, "#79C6AD", 5), timeout);
 	}
 	colorRecursion(x, y, timeout = 0) {
-		setTimeout(() => this.colorBox(x, y, "#1B4A33", 10), timeout);
+		setTimeout(() => this.colorBox(x, y, "#3f4f45", 10), timeout);
 	}
 	colorBox(x, y, color, objectType = 1, override = false) {
 		const stringCoords = JSON.stringify([x, y]);
