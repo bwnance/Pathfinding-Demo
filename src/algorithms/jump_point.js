@@ -19,9 +19,9 @@ export default class JumpPoint {
 	}
 
 	drawPath() {
+		this.pathLength = 0;
 		let current = this.graph.endNode;
 		if (!current) return;
-
 		const path = [];
 		while (current.posKey !== this.graph.startNode.posKey) {
 			path.push(current);
@@ -33,7 +33,8 @@ export default class JumpPoint {
 		}
 		path.push(this.graph.startNode);
 		const reversed = path.reverse();
-		this.pathLength = path.length;
+		this.pathLength = Math.floor(this.costSoFar[this.graph.endNode.posKey]) + 1;
+		debugger;
 		this.board.path = reversed;
 	}
 	startRecursive() {
@@ -90,9 +91,9 @@ export default class JumpPoint {
 			if (current.posKey === this.graph.endNode.posKey) break;
 			this.board.addFrontierToQueue(current.x, current.y);
 			// current.neighbors.forEach(neighborNode => {
-			for(let i = 0; i < current.neighbors.length; i++) {
+			for (let i = 0; i < current.neighbors.length; i++) {
 				const neighborNode = current.neighbors[i];
-				
+
 				const { neighbor, moveCost } = neighborNode;
 				const jumpResult = this.jump(current, neighbor);
 
@@ -101,29 +102,32 @@ export default class JumpPoint {
 				let secondPoint;
 				if (jumpResult instanceof Array) {
 					[jumpPoint, secondPoint] = jumpResult;
-				}
-				else{
+				} else {
 					jumpPoint = jumpResult;
 				}
-				if (jumpPoint.posKey === this.graph.endNode.posKey) {
-					this.cameFrom[jumpPoint.posKey] = neighbor;
-					this.cameFrom[jumpPoint.posKey] = current;
-					this.frontier.enqueue(jumpPoint, -100);
-					break;
-				}
-				let newCost = this.costSoFar[current.posKey] + moveCost; //movement cost 1 for orthoganals, 2 for diagonals
-				newCost +=
+				// let newCost =  + moveCost; //movement cost 1 for orthoganals, 2 for diagonals
+				let newCost =
+					this.costSoFar[current.posKey] +
 					this.settings.getHeuristic()(
 						[jumpPoint.x, jumpPoint.y],
 						[current.x, current.y]
-					) * 1.001;
+					) *
+						1.001;
+				if (jumpPoint.posKey === this.graph.endNode.posKey) {
+					this.cameFrom[jumpPoint.posKey] = neighbor;
+					this.cameFrom[jumpPoint.posKey] = current;
+					this.costSoFar[jumpPoint.posKey] = newCost;
+					this.frontier.enqueue(jumpPoint, -100);
+					break;
+				}
+
 				if (
 					!(jumpPoint.posKey in this.costSoFar) ||
 					newCost < this.costSoFar[jumpPoint.posKey]
 				) {
 					this.cameFrom[jumpPoint.posKey] = current;
 					this.costSoFar[jumpPoint.posKey] = newCost;
-					const priority = newCost + jumpPoint.endDist
+					const priority = newCost + jumpPoint.endDist;
 					this.frontier.enqueue(jumpPoint, priority);
 					// debugger;
 				}
@@ -131,18 +135,23 @@ export default class JumpPoint {
 				/////////////////////////////////////////////////
 				// debugger;
 				if (!secondPoint) continue;
+				// newCost = this.costSoFar[jumpPoint.posKey] + moveCost; //movement cost 1 for orthoganals, 2 for diagonals
+				// debugger
+				newCost =
+					this.costSoFar[jumpPoint.posKey] +
+					this.settings.getHeuristic()(
+						[secondPoint.x, secondPoint.y],
+						[jumpPoint.x, jumpPoint.y]
+					) *
+						1.001;
 				if (secondPoint.posKey === this.graph.endNode.posKey) {
+					debugger;
 					this.cameFrom[secondPoint.posKey] = jumpPoint;
+					this.costSoFar[secondPoint.posKey] = newCost;
 					this.frontier.enqueue(secondPoint, -100);
 					this.board.addFrontierToQueue(jumpPoint.x, jumpPoint.y);
 					break;
 				}
-				newCost = this.costSoFar[current.posKey] + moveCost; //movement cost 1 for orthoganals, 2 for diagonals
-				// debugger
-				newCost += this.settings.getHeuristic()(
-					[secondPoint.x, secondPoint.y],
-					[current.x, current.y]
-				) * 1.001;
 				if (
 					!(secondPoint.posKey in this.costSoFar) ||
 					newCost < this.costSoFar[secondPoint.posKey]
