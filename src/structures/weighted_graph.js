@@ -8,6 +8,15 @@ export default class WeightedGraph {
 		this.heuristic = settings.getHeuristic();
 		this.populateFromGrid(this.grid);
 	}
+	getNode(x,y){
+		return this.nodes[`${x},${y}`];
+	}
+	isWalkable(x,y){
+		const node = this.getNode(x,y);
+		if(!node) return false;
+		if(node.objectType === 1) return false
+		return true
+	}
 	populateFromGrid(grid) {
 		grid.forEach((row, y) => {
 			row.forEach((el, x) => {
@@ -77,7 +86,7 @@ export default class WeightedGraph {
 			}
 			neighbors.push({ neighbor, moveCost });
 		});
-		return neighbors;
+		return neighbors.reverse();
 		// .sort((el1, el2) => {
 		// 	const totalCost1 = el1.endDist;
 		// 	const totalCost2 = el2.endDist;

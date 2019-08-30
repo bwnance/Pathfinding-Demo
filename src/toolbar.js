@@ -2,6 +2,7 @@ import GoodBFS from "./algorithms/good_bfs";
 import Dijkstra from "./algorithms/dijkstra";
 import GreedyBestFirst from "./algorithms/greedy_best_first";
 import AStar from "./algorithms/a_star";
+import JumpPoint from "./algorithms/jump_point";
 import Two from "two.js";
 export default class Toolbar {
 	constructor(settings, board) {
@@ -9,6 +10,7 @@ export default class Toolbar {
 		this.settings = settings;
 		this.handleSearchClick = this.handleSearchClick.bind(this);
 		this.handleAStarClick = this.handleAStarClick.bind(this);
+		this.handleJPSClick = this.handleJPSClick.bind(this);
 		this.handleClearWalls = this.handleClearWalls.bind(this);
 		this.handleClearPath = this.handleClearPath.bind(this);
 		this.handleGoodBFSClick = this.handleGoodBFSClick.bind(this);
@@ -23,7 +25,7 @@ export default class Toolbar {
 		this.handleOctileClick = this.handleOctileClick.bind(this);
 		this.handleOrthogonalClick = this.handleOrthogonalClick.bind(this);
 		this.handleOctolinearClick = this.handleOctolinearClick.bind(this);
-		this.handleDiagonalClick = this.handleDiagonalClick.bind(this);
+		// this.handleDiagonalClick = this.handleDiagonalClick.bind(this);
 		this.currentAlgorithmElement = document.getElementById("current-algorithm");
 		this.setupEventListeners();
 	}
@@ -34,6 +36,9 @@ export default class Toolbar {
 		document
 			.getElementById("a*-label")
 			.addEventListener("click", this.handleAStarClick);
+		document
+			.getElementById("jps-label")
+			.addEventListener("click", this.handleJPSClick);
 		document
 			.getElementById("bfs-label")
 			.addEventListener("click", this.handleGoodBFSClick);
@@ -80,9 +85,9 @@ export default class Toolbar {
 			.getElementById("orthogonal-label")
 			.addEventListener("click", this.handleOrthogonalClick);
 
-		document
-			.getElementById("diagonal-label")
-			.addEventListener("click", this.handleDiagonalClick);
+		// document
+		// 	.getElementById("diagonal-label")
+		// 	.addEventListener("click", this.handleDiagonalClick);
 	}
 	handleOctolinearClick() {
 		this.settings.mode = 1;
@@ -140,6 +145,11 @@ export default class Toolbar {
 	}
 	handleSearchClick() {
 		switch (this.settings.algorithm) {
+			case "JPS":
+				const jps = new JumpPoint(this.board, this.settings);
+				jps.start();
+				this.setStats(jps.runtime, jps.steps, jps.pathLength);
+				break;
 			case "A_STAR":
 				const aStar = new AStar(this.board, this.settings);
 				aStar.start();
@@ -163,8 +173,8 @@ export default class Toolbar {
 		}
 	}
 	setStats(runtime, steps, pathLength) {
-		const stats = document.getElementById('stats')
-		stats.className = '';
+		const stats = document.getElementById("stats");
+		stats.className = "";
 		stats.children[0].innerText = `Runtime: ${runtime.toFixed(2)}ms`;
 		stats.children[1].innerText = `Steps: ${steps}`;
 		stats.children[2].innerText = `Path Length: ${pathLength}`;
@@ -172,6 +182,13 @@ export default class Toolbar {
 	handleAStarClick() {
 		this.currentAlgorithmElement.innerText = "A*";
 		this.settings.algorithm = "A_STAR";
+	}
+	handleJPSClick() {
+		this.currentAlgorithmElement.innerText = "Jump-Point Search";
+		this.settings.algorithm = "JPS";
+		document.getElementById("orthogonal").checked = true;
+		document.getElementById("octolinear").checked = false;
+		this.handleOrthogonalClick();
 	}
 	handleGoodBFSClick() {
 		this.currentAlgorithmElement.innerText = "Breadth First Search";
