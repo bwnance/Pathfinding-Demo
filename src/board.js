@@ -69,12 +69,16 @@ export default class Board {
 	}
 	drawPath() {
 		let prev = this.path.shift();
-		this.path.forEach(el => {
+
+		// this.path.forEach(el => {
+		for(let i = 0; i < this.path.length; i++) {
+			const el = this.path[i]
 			// setTimeout(() => this.board.colorBox(el.x, el.y, "black", 4));
 			const prevCoords = [prev.x, prev.y];
-			setTimeout(() => this.createLine(prevCoords, [el.x, el.y], "black", 4));
+			setTimeout(()=>this.createLine(prevCoords, [el.x, el.y], "black", 4),0);
+			
 			prev = el;
-		});
+		}
 	}
 	draw() {
 		this.drawQueue.enqueue(Object.assign({}, this.currentDrawSection));

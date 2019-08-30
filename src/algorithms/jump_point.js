@@ -213,8 +213,25 @@ export default class JumpPoint {
 			// 	this.jump(target.x, target.y, target.x, target.y + 1) ||
 			// 	this.jump(target.x, target.y, target.x, target.y - 1)
 			// ) {
-			// 	console.log("y");
+			// 	// console.log("y");
 			// 	return target;
+			// }
+			// const topResult = this.jump(
+			// 	target,
+			// 	this.graph.getNode(target.x, target.y - 1)
+			// );
+			// if (topResult) {
+			// 	// return target;
+			// 	return [target, topResult];
+			// }
+			// const bottomResult = this.jump(
+			// 	target,
+			// 	this.graph.getNode(target.x, target.y + 1)
+			// );
+
+			// if (bottomResult) {
+			// 	// return target;
+			// 	return [target, bottomResult];
 			// }
 		}
 		if (dy != 0) {
@@ -244,12 +261,11 @@ export default class JumpPoint {
 				// return target;
 				return [target, leftResult];
 			}
-			// if (
-			// 	rightResult || leftResult
-			// ) {
-			// 	console.log("y");
-			// 	return target;
-			// }
+			if (
+				rightResult || leftResult
+			) {
+				return target;
+			}
 		}
 		let nextPos = this.jump(
 			target,
