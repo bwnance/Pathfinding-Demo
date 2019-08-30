@@ -109,24 +109,21 @@ export default class JumpPoint {
 					this.cameFrom[jumpPoint.posKey] = neighbor;
 					this.cameFrom[jumpPoint.posKey] = current;
 					this.frontier.enqueue(jumpPoint, -100);
-
 					break;
 				}
 				let newCost = this.costSoFar[current.posKey] + moveCost; //movement cost 1 for orthoganals, 2 for diagonals
-				newCost += this.settings.getHeuristic()(
-					[jumpPoint.x, jumpPoint.y],
-					[current.x, current.y]
-				);
+				newCost +=
+					this.settings.getHeuristic()(
+						[jumpPoint.x, jumpPoint.y],
+						[current.x, current.y]
+					) * 1.001;
 				if (
 					!(jumpPoint.posKey in this.costSoFar) ||
 					newCost < this.costSoFar[jumpPoint.posKey]
 				) {
 					this.cameFrom[jumpPoint.posKey] = current;
 					this.costSoFar[jumpPoint.posKey] = newCost;
-					const priority = this.settings.getHeuristic()(
-						[jumpPoint.x, jumpPoint.y],
-						this.board.targetCoords
-					);
+					const priority = newCost + jumpPoint.endDist
 					this.frontier.enqueue(jumpPoint, priority);
 					// debugger;
 				}
@@ -145,7 +142,7 @@ export default class JumpPoint {
 				newCost += this.settings.getHeuristic()(
 					[secondPoint.x, secondPoint.y],
 					[current.x, current.y]
-				);
+				) * 1.001;
 				if (
 					!(secondPoint.posKey in this.costSoFar) ||
 					newCost < this.costSoFar[secondPoint.posKey]
@@ -153,10 +150,7 @@ export default class JumpPoint {
 					this.cameFrom[secondPoint.posKey] = jumpPoint;
 					this.costSoFar[secondPoint.posKey] = newCost;
 					// debugger
-					const priority = this.settings.getHeuristic()(
-						[secondPoint.x, secondPoint.y],
-						this.board.targetCoords
-					);
+					const priority = secondPoint.endDist + newCost;
 					// debugger;
 					this.frontier.enqueue(secondPoint, priority);
 				}
@@ -202,6 +196,7 @@ export default class JumpPoint {
 				(this.graph.isWalkable(target.x, target.y + 1) &&
 					!this.graph.isWalkable(target.x - dx, target.y + 1))
 			) {
+				// debugger
 				return target;
 			}
 			// if (
@@ -227,6 +222,7 @@ export default class JumpPoint {
 				this.graph.getNode(target.x + 1, target.y)
 			);
 			if (rightResult) {
+				// return target;
 				return [target, rightResult];
 			}
 			const leftResult = this.jump(
@@ -235,6 +231,7 @@ export default class JumpPoint {
 			);
 
 			if (leftResult) {
+				// return target;
 				return [target, leftResult];
 			}
 			// if (

@@ -32,7 +32,7 @@ export default class WeightedGraph {
 		});
 	}
 	getEndCost(x, y) {
-		return this.heuristic([x, y], this.board.targetCoords) * (1.0 + 0.001);
+		return this.heuristic([x, y], this.board.targetCoords) * 1.001;
 	}
 	neighbors(node) {
 		const neighbors = [];
