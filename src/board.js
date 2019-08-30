@@ -24,8 +24,11 @@ export default class Board {
 		this.saved = {};
 		this.backgroundColor = "#353535";
 		this.drawQueue = new Queue();
+		this.recursionQueue = new Queue();
 		this.currentDrawSection = {};
 		this._draw = this._draw.bind(this);
+		this._draw_recursion = this._draw_recursion.bind(this);
+		this.drawnSquares = {};
 	}
 	setup() {
 		this.setupCanvases();
@@ -75,8 +78,28 @@ export default class Board {
 	}
 	draw() {
 		this.drawQueue.enqueue(Object.assign({}, this.currentDrawSection));
+		
+		setTimeout(this._draw_recursion);
+	}
+	_draw_recursion(){
+		const square = this.recursionQueue.dequeue();
+		if(square === undefined){
+			this.recursionQueue = new Queue();
+			this.drawnSquares = {};
+			setTimeout(this._draw);
+			return;
+		}
+		if(square in this.drawnSquares){
+			
+			this._draw_recursion();
+			
+		}
+		else{
+			this.colorRecursion(...square)
+			this.drawnSquares[square] = true;
+			this.sleep(1).then(this._draw_recursion);
 
-		setTimeout(this._draw);
+		}
 	}
 	_draw() {
 		let section = this.drawQueue.dequeue();
@@ -89,9 +112,8 @@ export default class Board {
 		section.neighbors.forEach(neighbor => {
 			this.colorNeighbor(...neighbor);
 		});
-		section.recursion.forEach(recursion => {
-			this.colorRecursion(...recursion);
-		});
+		
+
 		// section = this.drawQueue.dequeue();
 		this.sleep(3).then(this._draw);
 	}
@@ -110,7 +132,7 @@ export default class Board {
 		// setTimeout(() => this.colorBox(x, y, "#79C6AD", 5), 10);
 	}
 	addRecursionToQueue(x, y) {
-		this.currentDrawSection.recursion.push([x, y]);
+		this.recursionQueue.enqueue([x, y]);
 		// setTimeout(() => this.colorBox(x, y, "#79C6AD", 5), 10);
 	}
 	colorFrontier(x, y, timeout = 0) {
