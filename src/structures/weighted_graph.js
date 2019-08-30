@@ -86,20 +86,21 @@ export default class WeightedGraph {
 			}
 			neighbors.push({ neighbor, moveCost });
 		});
-		return neighbors.reverse();
-		// .sort((el1, el2) => {
-		// 	const totalCost1 = el1.endDist;
-		// 	const totalCost2 = el2.endDist;
-		// 	if(totalCost1 < totalCost2){
-		// 		return -1
-		// 	}
-		// 	if(totalCost2 === totalCost1){
-		// 		return 0;
-		// 	}
-		// 	if(totalCost2 > totalCost1){
-		// 		return 1
-		// 	}
-		// });
+		return neighbors
+		.sort((el1, el2) => {
+			// debugger
+			const totalCost1 = el1.neighbor.endDist;
+			const totalCost2 = el2.neighbor.endDist;
+			if(totalCost1 < totalCost2){
+				return -1
+			}
+			if(totalCost2 === totalCost1){
+				return 0;
+			}
+			if(totalCost2 > totalCost1){
+				return 1
+			}
+		});
 	}
 }
 class WeightedGraphNode {

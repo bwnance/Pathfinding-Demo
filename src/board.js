@@ -64,20 +64,18 @@ export default class Board {
 	sleep(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
-	drawPath(){
+	drawPath() {
 		let prev = this.path.shift();
 		this.path.forEach(el => {
 			// setTimeout(() => this.board.colorBox(el.x, el.y, "black", 4));
 			const prevCoords = [prev.x, prev.y];
-			setTimeout(() =>
-				this.createLine(prevCoords, [el.x, el.y], "black", 4)
-			);
+			setTimeout(() => this.createLine(prevCoords, [el.x, el.y], "black", 4));
 			prev = el;
 		});
 	}
 	draw() {
 		this.drawQueue.enqueue(Object.assign({}, this.currentDrawSection));
-		
+
 		setTimeout(this._draw);
 	}
 	_draw() {
@@ -91,6 +89,9 @@ export default class Board {
 		section.neighbors.forEach(neighbor => {
 			this.colorNeighbor(...neighbor);
 		});
+		section.recursion.forEach(recursion => {
+			this.colorRecursion(...recursion);
+		});
 		// section = this.drawQueue.dequeue();
 		this.sleep(3).then(this._draw);
 	}
@@ -99,7 +100,8 @@ export default class Board {
 			this.drawQueue.enqueue(Object.assign({}, this.currentDrawSection));
 		this.currentDrawSection = {
 			frontier: [x, y],
-			neighbors: []
+			neighbors: [],
+			recursion: []
 		};
 		// setTimeout(() => this.colorBox(x, y, "#E9D6EC", 4), 10);
 	}
@@ -107,11 +109,18 @@ export default class Board {
 		this.currentDrawSection.neighbors.push([x, y]);
 		// setTimeout(() => this.colorBox(x, y, "#79C6AD", 5), 10);
 	}
+	addRecursionToQueue(x, y) {
+		this.currentDrawSection.recursion.push([x, y]);
+		// setTimeout(() => this.colorBox(x, y, "#79C6AD", 5), 10);
+	}
 	colorFrontier(x, y, timeout = 0) {
 		setTimeout(() => this.colorBox(x, y, "#E9D6EC", 4), timeout);
 	}
 	colorNeighbor(x, y, timeout = 0) {
 		setTimeout(() => this.colorBox(x, y, "#79C6AD", 5), timeout);
+	}
+	colorRecursion(x, y, timeout = 0) {
+		setTimeout(() => this.colorBox(x, y, "#1B4A33", 10), timeout);
 	}
 	colorBox(x, y, color, objectType = 1, override = false) {
 		const stringCoords = JSON.stringify([x, y]);
@@ -299,6 +308,8 @@ export default class Board {
 				this.colorFrontier(px, py);
 			} else if (savedBox.objectType === 5) {
 				this.colorNeighbor(px, py);
+			} else if (savedBox.objectType === 10) {
+				this.colorRecursion(px, py);
 			}
 			// delete this.saved[JSON.stringify(this.targetCoords)];
 		} else {
@@ -308,12 +319,14 @@ export default class Board {
 	clearStart() {
 		const savedBox = this.saved[JSON.stringify(this.startCoords)];
 		const [px, py] = this.startCoords;
-		console.log(savedBox);
+		// console.log(savedBox);
 		if (savedBox) {
 			if (savedBox.objectType === 4) {
 				this.colorFrontier(px, py);
 			} else if (savedBox.objectType === 5) {
 				this.colorNeighbor(px, py);
+			} else if (savedBox.objectType === 10) {
+				this.colorRecursion(px, py);
 			}
 			// delete this.saved[JSON.stringify(this.startCoords)];
 		} else {
@@ -329,10 +342,7 @@ export default class Board {
 		this.targetCoords = [x, y];
 	}
 	addListeners() {
-		this.rootEl.addEventListener(
-			"mousemove",
-			this.handleMouseMove.bind(this)
-		);
+		this.rootEl.addEventListener("mousemove", this.handleMouseMove.bind(this));
 		this.parentEl.addEventListener(
 			"mousedown",
 			this.handleMouseDown.bind(this)
@@ -379,7 +389,11 @@ export default class Board {
 		}
 		if (this.grid[y][x].objectType !== 1) {
 			const currentBox = this.grid[y][x];
-			if (currentBox.objectType === 4 || currentBox.objectType === 5) {
+			if (
+				currentBox.objectType === 4 ||
+				currentBox.objectType === 5 ||
+				currentBox.objectType === 10
+			) {
 				const realCoords = [currentBox.boxInfo.x, currentBox.boxInfo.y];
 
 				this.saved[JSON.stringify(realCoords)] = Object.assign({}, currentBox);
@@ -396,6 +410,8 @@ export default class Board {
 					this.colorFrontier(x, y);
 				} else if (savedBox.objectType === 5) {
 					this.colorNeighbor(x, y);
+				} else if (savedBox.objectType === 10) {
+					this.colorRecursion(x, y);
 				}
 				delete this.saved[JSON.stringify([x, y])];
 			} else {
@@ -411,7 +427,11 @@ export default class Board {
 		if (!this.grid[y] || !this.grid[y][x]) return;
 		if (JSON.stringify(this.lastCoords) === JSON.stringify([x, y])) return;
 		const currentBox = this.grid[y][x];
-		if (currentBox.objectType === 4 || currentBox.objectType === 5) {
+		if (
+			currentBox.objectType === 4 ||
+			currentBox.objectType === 5 ||
+			currentBox.objectType === 10
+		) {
 			const realCoords = [currentBox.boxInfo.x, currentBox.boxInfo.y];
 			this.saved[JSON.stringify(realCoords)] = Object.assign({}, currentBox);
 		}
@@ -442,6 +462,8 @@ export default class Board {
 					this.colorFrontier(x, y);
 				} else if (savedBox.objectType === 5) {
 					this.colorNeighbor(x, y);
+				} else if (savedBox.objectType === 10) {
+					this.colorRecursion(x, y);
 				}
 				// delete this.saved[JSON.stringify([x, y])];
 			} else {

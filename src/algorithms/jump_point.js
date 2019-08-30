@@ -34,7 +34,7 @@ export default class JumpPoint {
 		path.push(this.graph.startNode);
 		const reversed = path.reverse();
 		this.pathLength = Math.floor(this.costSoFar[this.graph.endNode.posKey]) + 1;
-		debugger;
+		// debugger;
 		this.board.path = reversed;
 	}
 	startRecursive() {
@@ -92,6 +92,7 @@ export default class JumpPoint {
 			this.board.addFrontierToQueue(current.x, current.y);
 			// current.neighbors.forEach(neighborNode => {
 			for (let i = 0; i < current.neighbors.length; i++) {
+				
 				const neighborNode = current.neighbors[i];
 
 				const { neighbor, moveCost } = neighborNode;
@@ -145,7 +146,7 @@ export default class JumpPoint {
 					) *
 						1.001;
 				if (secondPoint.posKey === this.graph.endNode.posKey) {
-					debugger;
+					// debugger;
 					this.cameFrom[secondPoint.posKey] = jumpPoint;
 					this.costSoFar[secondPoint.posKey] = newCost;
 					this.frontier.enqueue(secondPoint, -100);
@@ -195,7 +196,7 @@ export default class JumpPoint {
 		if (!this.graph.isWalkable(target.x, target.y)) {
 			return null;
 		}
-		// this.board.addFrontierToQueue(target.x, target.y);
+		this.board.addRecursionToQueue(target.x, target.y);
 
 		if (target.posKey === this.graph.endNode.posKey) return target;
 		if (dx != 0) {
