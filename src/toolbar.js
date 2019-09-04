@@ -144,6 +144,7 @@ export default class Toolbar {
 		this.board.setupFG();
 	}
 	handleSearchClick() {
+		this.board.disableUI();
 		switch (this.settings.algorithm) {
 			case "JPS":
 				const jps = new JumpPoint(this.board, this.settings);

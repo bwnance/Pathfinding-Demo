@@ -29,6 +29,7 @@ export default class Board {
 		this._draw = this._draw.bind(this);
 		this._draw_recursion = this._draw_recursion.bind(this);
 		this.drawnSquares = {};
+		this.running = false;
 	}
 	setup() {
 		this.setupCanvases();
@@ -71,38 +72,51 @@ export default class Board {
 		let prev = this.path.shift();
 
 		// this.path.forEach(el => {
-		for(let i = 0; i < this.path.length; i++) {
-			const el = this.path[i]
+		for (let i = 0; i < this.path.length; i++) {
+			const el = this.path[i];
 			// setTimeout(() => this.board.colorBox(el.x, el.y, "black", 4));
 			const prevCoords = [prev.x, prev.y];
-			setTimeout(()=>this.createLine(prevCoords, [el.x, el.y], "black", 4),0);
-			
+			setTimeout(
+				() => this.createLine(prevCoords, [el.x, el.y], "black", 4),
+				0
+			);
+
 			prev = el;
 		}
 	}
+	enableUI(){
+		this.running = false;
+		document.getElementById('search').disabled = false;
+		document.getElementById("clear-walls").disabled = false;
+		document.getElementById("clear-path").disabled = false;
+	}
+	disableUI(){
+		this.running = true;
+		document.getElementById("search").disabled = true;
+		document.getElementById("clear-walls").disabled = true;
+		document.getElementById("clear-path").disabled = true;
+	}
 	draw() {
 		this.drawQueue.enqueue(Object.assign({}, this.currentDrawSection));
-		
-		setTimeout(this._draw_recursion);
+		const that = this
+		setTimeout(() => {
+			that._draw_recursion();
+		});
 	}
-	_draw_recursion(){
+	_draw_recursion() {
 		const square = this.recursionQueue.dequeue();
-		if(square === undefined){
+		if (square === undefined) {
 			this.recursionQueue = new Queue();
 			this.drawnSquares = {};
-			setTimeout(this._draw);
+			this._draw();
 			return;
 		}
-		if(square in this.drawnSquares){
-			
+		if (square in this.drawnSquares) {
 			this._draw_recursion();
-			
-		}
-		else{
-			this.colorRecursion(...square)
+		} else {
+			this.colorRecursion(...square);
 			this.drawnSquares[square] = true;
 			this.sleep(1).then(this._draw_recursion);
-
 		}
 	}
 	_draw() {
@@ -110,13 +124,13 @@ export default class Board {
 		if (section === undefined) {
 			this.currentDrawSection = {};
 			this.drawPath();
+			this.enableUI();
 			return;
 		}
 		this.colorFrontier(...section.frontier);
 		section.neighbors.forEach(neighbor => {
 			this.colorNeighbor(...neighbor);
 		});
-		
 
 		// section = this.drawQueue.dequeue();
 		this.sleep(3).then(this._draw);
@@ -386,6 +400,8 @@ export default class Board {
 		// this.deleting = false;
 	}
 	handleMouseUp(e) {
+		if (this.running) return;
+
 		const x = Math.floor(e.layerX / this.boxSize) + 1;
 		const y = Math.floor(e.layerY / this.boxSize) + 1;
 		if (this.carryingStart) {
@@ -402,6 +418,7 @@ export default class Board {
 		}
 	}
 	handleMouseDown(e) {
+		if(this.running) return;
 		const x = Math.floor(e.layerX / this.boxSize) + 1;
 		const y = Math.floor(e.layerY / this.boxSize) + 1;
 		if (!this.grid[y] || !this.grid[y][x]) return;
@@ -448,6 +465,7 @@ export default class Board {
 	}
 	handleMouseMove(e) {
 		// debugger
+		if (this.running) return;
 		const x = Math.floor(e.pageX / this.boxSize) + 1;
 		const y = Math.floor(e.pageY / this.boxSize) + 1;
 		if (!this.grid[y] || !this.grid[y][x]) return;
